@@ -2,235 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bharat Park Pro | Multi-Wing Console</title>
-    <style>
-        :root {
-            --bg: #0a0a0a;
-            --card: #161b22;
-            --accent: #ff9933;
-            --success: #238636;
-            --danger: #da3633;
-            --text: #c9d1d9;
-        }
+    <title>Smart Car Parking System</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            height: 100vh;
-        }
-
-        /* Sidebar Stats */
-        .sidebar {
-            width: 300px;
-            background: #0d1117;
-            border-right: 1px solid #30363d;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .wing-stats {
-            background: var(--card);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            border-left: 4px solid #30363d;
-        }
-
-        .wing-stats.active { border-left-color: var(--accent); }
-
-        /* Main Content */
-        .main { flex: 1; padding: 30px; display: flex; flex-direction: column; }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        /* Wing Navigation */
-        .wing-nav {
-            display: flex;
-            gap: 10px;
-            background: var(--card);
-            padding: 8px;
-            border-radius: 10px;
-            width: fit-content;
-        }
-
-        .wing-btn {
-            padding: 10px 25px;
-            cursor: pointer;
-            border-radius: 6px;
-            background: transparent;
-            color: white;
-            border: none;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .wing-btn.active { background: var(--accent); color: #000; }
-
-        /* Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 15px;
-            flex-grow: 1;
-        }
-
-        .slot {
-            height: 120px;
-            background: var(--card);
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .slot.available { border-top: 5px solid var(--success); }
-        .slot.occupied { border-top: 5px solid var(--danger); background: #211515; }
-
-        .slot-label { font-size: 0.7rem; color: #8b949e; position: absolute; top: 10px; }
-        .plate-display { font-weight: bold; font-size: 0.9rem; margin-top: 10px; color: var(--accent); }
-
-        .revenue-box {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--success);
-            margin-bottom: 20px;
-        }
-    </style>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-    <div class="sidebar">
-        <h2 style="color: var(--accent);">PRO-PARK INDIA</h2>
-        <div class="revenue-box" id="total-rev">₹0</div>
-        
-        <div id="wing-summary">
-            </div>
+<body class="bg-gradient-to-br from-slate-100 to-slate-200 min-h-screen">
 
-        <button onclick="resetAll()" style="margin-top:auto; padding: 10px; background: #21262d; color: var(--danger); border: 1px solid #30363d; cursor:pointer;">Reset System</button>
-    </div>
+<div class="max-w-6xl mx-auto p-6">
 
-    <div class="main">
-        <div class="header">
-            <div class="wing-nav" id="wing-nav">
-                <button class="wing-btn active" onclick="switchWing('A')">WING A</button>
-                <button class="wing-btn" onclick="switchWing('B')">WING B</button>
-                <button class="wing-btn" onclick="switchWing('C')">WING C</button>
-                <button class="wing-btn" onclick="switchWing('D')">WING D</button>
-            </div>
-            <div>
-                <span id="current-wing-title" style="font-size: 1.2rem; font-weight: bold;">Current: Wing A</span>
-            </div>
+    <!-- Header -->
+    <header class="flex flex-col sm:flex-row items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-800">
+                🚗 Smart Car Parking System
+            </h1>
+            <p class="text-slate-500">
+                Modern parking slot management dashboard
+            </p>
         </div>
+        <span class="mt-4 sm:mt-0 px-4 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+            Live Status
+        </span>
+    </header>
 
-        <div class="grid" id="parking-grid"></div>
-    </div>
+    <!-- Stats -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-xl shadow p-5 text-center">
+            <p class="text-slate-500 text-sm">Total Slots</p>
+            <p class="text-2xl font-bold text-slate-800">10</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-5 text-center">
+            <p class="text-slate-500 text-sm">Available</p>
+            <p id="availableCount" class="text-2xl font-bold text-green-600">0</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-5 text-center">
+            <p class="text-slate-500 text-sm">Occupied</p>
+            <p id="occupiedCount" class="text-2xl font-bold text-red-600">0</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-5 text-center">
+            <p class="text-slate-500 text-sm">Rate</p>
+            <p class="text-2xl font-bold text-slate-800">₹20/hr</p>
+        </div>
+    </section>
 
-<script>
-    let currentWing = 'A';
-    const slotsPerWing = 12;
-    const inr = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });
+    <!-- Alert -->
+    <div id="alertBox" class="hidden mb-6 p-4 rounded-lg text-center font-medium"></div>
 
-    // Multi-wing data structure
-    let db = JSON.parse(localStorage.getItem('parkWingsDB')) || { A: {}, B: {}, C: {}, D: {} };
-    let revenue = parseFloat(localStorage.getItem('totalRevenue')) || 0;
+    <!-- Control Panel -->
+    <section class="bg-white rounded-xl shadow p-6 mb-10">
+        <h2 class="text-lg font-semibold text-slate-700 mb-4">
+            Vehicle Control
+        </h2>
 
-    function switchWing(wingId) {
-        currentWing = wingId;
-        // UI Update
-        document.querySelectorAll('.wing-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.innerText.includes(wingId));
-        });
-        document.getElementById('current-wing-title').innerText = `Current: Wing ${wingId}`;
-        renderGrid();
-    }
+        <div class="flex flex-col sm:flex-row gap-4">
+            <input
+                type="text"
+                id="carNumber"
+                placeholder="Enter Vehicle Number"
+                class="flex-1 border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
 
-    function renderGrid() {
-        const grid = document.getElementById('parking-grid');
-        grid.innerHTML = '';
-        const wingData = db[currentWing];
+            <button
+                onclick="parkCar()"
+                class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"
+            >
+                Park Vehicle
+            </button>
 
-        for (let i = 1; i <= slotsPerWing; i++) {
-            const isOcc = wingData[i];
-            const slot = document.createElement('div');
-            slot.className = `slot ${isOcc ? 'occupied' : 'available'}`;
-            slot.innerHTML = `
-                <div class="slot-label">${currentWing}-${i}</div>
-                <div style="font-size:1.5rem">${isOcc ? '🚗' : '🅿️'}</div>
-                <div class="plate-display">${isOcc ? isOcc.plate : 'VACANT'}</div>
-            `;
-            slot.onclick = () => handleAction(i);
-            grid.appendChild(slot);
-        }
-        updateStats();
-    }
+            <button
+                onclick="removeCar()"
+                class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
+            >
+                Remove Vehicle
+            </button>
+        </div>
+    </section>
 
-    function handleAction(slotId) {
-        const wingData = db[currentWing];
-        if (!wingData[slotId]) {
-            const plate = prompt(`Enter Car Number for ${currentWing}-${slotId}:`);
-            if (plate) {
-                wingData[slotId] = { plate: plate.toUpperCase(), time: Date.now() };
-                save();
-            }
-        } else {
-            const car = wingData[slotId];
-            const durationSec = Math.floor((Date.now() - car.time) / 1000);
-            const fee = 50 + (Math.floor(durationSec / 10) * 5); // 50 Base + 5 per 10sec for demo
-            
-            if (confirm(`Exit Wing ${currentWing}?\nVehicle: ${car.plate}\nTotal Fee: ${inr.format(fee)} (incl. GST)`)) {
-                revenue += fee;
-                delete wingData[slotId];
-                save();
-            }
-        }
-    }
+    <!-- Slots -->
+    <section>
+        <h2 class="text-xl font-semibold text-slate-700 mb-4">
+            Parking Slots
+        </h2>
 
-    function updateStats() {
-        document.getElementById('total-rev').innerText = inr.format(revenue);
-        const summary = document.getElementById('wing-summary');
-        summary.innerHTML = '';
+        <div id="slots" class="grid grid-cols-2 sm:grid-cols-5 gap-5"></div>
+    </section>
 
-        ['A', 'B', 'C', 'D'].forEach(w => {
-            const occupied = Object.keys(db[w]).length;
-            const div = document.createElement('div');
-            div.className = `wing-stats ${w === currentWing ? 'active' : ''}`;
-            div.innerHTML = `
-                <strong>Wing ${w}</strong><br>
-                ${occupied}/${slotsPerWing} Occupied (${slotsPerWing - occupied} Free)
-            `;
-            summary.appendChild(div);
-        });
-    }
+</div>
 
-    function save() {
-        localStorage.setItem('parkWingsDB', JSON.stringify(db));
-        localStorage.setItem('totalRevenue', revenue);
-        renderGrid();
-    }
-
-    function resetAll() {
-        if(confirm("Wipe all wings and revenue data?")) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
-
-    renderGrid();
-</script>
+<script src="script.js"></script>
 </body>
 </html>

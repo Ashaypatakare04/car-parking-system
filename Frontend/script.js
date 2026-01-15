@@ -1,69 +1,85 @@
 const totalSlots = 10;
-let parkingSlots = [];
+let slots = [];
 
-function initSlots() {
+function init() {
     for (let i = 1; i <= totalSlots; i++) {
-        parkingSlots.push({
+        slots.push({
             slot: i,
             car: null,
             entryTime: null
         });
     }
-    displaySlots();
+    updateUI();
 }
 
-function displaySlots() {
-    const slotDiv = document.getElementById("slots");
-    slotDiv.innerHTML = "";
+function showAlert(message, type) {
+    const box = document.getElementById("alertBox");
+    box.className = `mb-4 p-3 rounded text-center ${
+        type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+    }`;
+    box.innerText = message;
+    box.classList.remove("hidden");
 
-    parkingSlots.forEach(s => {
+    setTimeout(() => box.classList.add("hidden"), 3000);
+}
+
+function updateUI() {
+    const slotsDiv = document.getElementById("slots");
+    slotsDiv.innerHTML = "";
+
+    let occupied = 0;
+
+    slots.forEach(s => {
+        if (s.car) occupied++;
+
         const div = document.createElement("div");
-        div.className = "slot " + (s.car ? "occupied" : "free");
+        div.className = `p-4 rounded shadow text-center ${
+            s.car ? "bg-red-100" : "bg-green-100"
+        }`;
+
         div.innerHTML = `
-            Slot ${s.slot}<br>
-            ${s.car ? s.car : "Free"}
+            <p class="font-bold">Slot ${s.slot}</p>
+            <p class="text-sm">${s.car ? s.car : "Available"}</p>
+            <p class="text-xs text-gray-500">
+                ${s.entryTime ? "In: " + s.entryTime.toLocaleTimeString() : ""}
+            </p>
         `;
-        slotDiv.appendChild(div);
+
+        slotsDiv.appendChild(div);
     });
+
+    document.getElementById("availableCount").innerText = totalSlots - occupied;
+    document.getElementById("occupiedCount").innerText = occupied;
 }
 
 function parkCar() {
-    const carNumber = document.getElementById("carNumber").value;
-    if (!carNumber) {
-        alert("Enter car number");
-        return;
-    }
+    const car = document.getElementById("carNumber").value.trim();
+    if (!car) return showAlert("Enter car number", "error");
 
-    const freeSlot = parkingSlots.find(s => s.car === null);
-    if (!freeSlot) {
-        alert("Parking Full!");
-        return;
-    }
+    const freeSlot = slots.find(s => s.car === null);
+    if (!freeSlot) return showAlert("Parking is full", "error");
 
-    freeSlot.car = carNumber;
+    freeSlot.car = car;
     freeSlot.entryTime = new Date();
-    displaySlots();
-    alert(`Car parked in slot ${freeSlot.slot}`);
+
+    showAlert(`Car parked in Slot ${freeSlot.slot}`, "success");
+    updateUI();
 }
 
 function removeCar() {
-    const carNumber = document.getElementById("carNumber").value;
-    const slot = parkingSlots.find(s => s.car === carNumber);
+    const car = document.getElementById("carNumber").value.trim();
+    const slot = slots.find(s => s.car === car);
 
-    if (!slot) {
-        alert("Car not found!");
-        return;
-    }
+    if (!slot) return showAlert("Car not found", "error");
 
-    const exitTime = new Date();
-    const hours = Math.ceil((exitTime - slot.entryTime) / (1000 * 60 * 60));
+    const hours = Math.ceil((new Date() - slot.entryTime) / (1000 * 60 * 60));
     const amount = hours * 20;
 
-    alert(`Parking Time: ${hours} hour(s)\nBill Amount: ₹${amount}`);
+    showAlert(`Bill: ₹${amount} for ${hours} hour(s)`, "success");
 
     slot.car = null;
     slot.entryTime = null;
-    displaySlots();
+    updateUI();
 }
 
-initSlots();
+init();
