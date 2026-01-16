@@ -1,8 +1,9 @@
-const totalSlots = 10;
+const TOTAL_SLOTS = 10;
+const RATE_PER_HOUR = 20;
 let slots = [];
 
 function init() {
-    for (let i = 1; i <= totalSlots; i++) {
+    for (let i = 1; i <= TOTAL_SLOTS; i++) {
         slots.push({
             slot: i,
             car: null,
@@ -14,8 +15,10 @@ function init() {
 
 function showAlert(message, type) {
     const box = document.getElementById("alertBox");
-    box.className = `mb-4 p-3 rounded text-center ${
-        type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+    box.className = `mb-6 p-4 rounded-lg text-center font-medium ${
+        type === "success"
+            ? "bg-green-100 text-green-700"
+            : "bg-red-100 text-red-700"
     }`;
     box.innerText = message;
     box.classList.remove("hidden");
@@ -33,28 +36,41 @@ function updateUI() {
         if (s.car) occupied++;
 
         const div = document.createElement("div");
-        div.className = `p-4 rounded shadow text-center ${
-            s.car ? "bg-red-100" : "bg-green-100"
-        }`;
+        div.className = `
+            rounded-xl p-4 shadow
+            ${s.car ? "bg-red-50 border border-red-200" : "bg-green-50 border border-green-200"}
+            transition hover:scale-105
+        `;
 
         div.innerHTML = `
-            <p class="font-bold">Slot ${s.slot}</p>
-            <p class="text-sm">${s.car ? s.car : "Available"}</p>
-            <p class="text-xs text-gray-500">
-                ${s.entryTime ? "In: " + s.entryTime.toLocaleTimeString() : ""}
+            <div class="flex items-center justify-between mb-2">
+                <span class="font-semibold text-slate-700">Slot ${s.slot}</span>
+                <span class="text-xs px-2 py-1 rounded-full ${
+                    s.car ? "bg-red-200 text-red-800" : "bg-green-200 text-green-800"
+                }">
+                    ${s.car ? "Occupied" : "Free"}
+                </span>
+            </div>
+
+            <p class="text-sm text-slate-600">
+                ${s.car ? `🚘 ${s.car}` : "No vehicle"}
+            </p>
+
+            <p class="text-xs text-slate-400 mt-1">
+                ${s.entryTime ? "Entry: " + s.entryTime.toLocaleTimeString() : ""}
             </p>
         `;
 
         slotsDiv.appendChild(div);
     });
 
-    document.getElementById("availableCount").innerText = totalSlots - occupied;
+    document.getElementById("availableCount").innerText = TOTAL_SLOTS - occupied;
     document.getElementById("occupiedCount").innerText = occupied;
 }
 
 function parkCar() {
     const car = document.getElementById("carNumber").value.trim();
-    if (!car) return showAlert("Enter car number", "error");
+    if (!car) return showAlert("Please enter vehicle number", "error");
 
     const freeSlot = slots.find(s => s.car === null);
     if (!freeSlot) return showAlert("Parking is full", "error");
@@ -62,7 +78,7 @@ function parkCar() {
     freeSlot.car = car;
     freeSlot.entryTime = new Date();
 
-    showAlert(`Car parked in Slot ${freeSlot.slot}`, "success");
+    showAlert(`Vehicle parked in Slot ${freeSlot.slot}`, "success");
     updateUI();
 }
 
@@ -70,15 +86,15 @@ function removeCar() {
     const car = document.getElementById("carNumber").value.trim();
     const slot = slots.find(s => s.car === car);
 
-    if (!slot) return showAlert("Car not found", "error");
+    if (!slot) return showAlert("Vehicle not found", "error");
 
     const hours = Math.ceil((new Date() - slot.entryTime) / (1000 * 60 * 60));
-    const amount = hours * 20;
-
-    showAlert(`Bill: ₹${amount} for ${hours} hour(s)`, "success");
+    const amount = hours * RATE_PER_HOUR;
 
     slot.car = null;
     slot.entryTime = null;
+
+    showAlert(`Parking Fee: ₹${amount} (${hours} hour(s))`, "success");
     updateUI();
 }
 
