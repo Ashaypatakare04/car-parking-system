@@ -1,164 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Smart Car Parking System</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>Smart Parking • Pro Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Tailwind Theme -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#6366f1",
-                        success: "#22c55e",
-                        danger: "#ef4444",
-                        glass: "rgba(255,255,255,0.6)"
-                    }
-                }
-            }
-        }
-    </script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: "#06070c",
+        panel: "rgba(255,255,255,0.06)",
+        stroke: "rgba(255,255,255,0.12)",
+        neon: "#7c7cff",
+        green: "#2bff88",
+        red: "#ff4d6d",
+        text: "#e5e7eb",
+        muted: "#9ca3af"
+      }
+    }
+  }
+}
+</script>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+<body class="bg-bg text-text overflow-x-hidden">
 
-<!-- App Wrapper -->
-<div class="min-h-screen backdrop-blur-md bg-glass">
-
-    <!-- Top Bar -->
-    <header class="px-6 py-5 flex justify-between items-center">
-        <h1 class="text-white text-2xl font-bold">
-            🚗 Smart Parking
-        </h1>
-        <span class="px-4 py-1 rounded-full bg-white/30 text-white text-sm">
-            Live Dashboard
-        </span>
-    </header>
-
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-6 pb-10">
-
-        <!-- Stats -->
-        <section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-            <div class="stat-card">
-                <p>Total Slots</p>
-                <h2>10</h2>
-            </div>
-            <div class="stat-card text-green-600">
-                <p>Available</p>
-                <h2 id="availableCount">0</h2>
-            </div>
-            <div class="stat-card text-red-500">
-                <p>Occupied</p>
-                <h2 id="occupiedCount">0</h2>
-            </div>
-            <div class="stat-card">
-                <p>Rate</p>
-                <h2>₹20/hr</h2>
-            </div>
-        </section>
-
-        <!-- Alert -->
-        <div id="alertBox" class="hidden mb-6"></div>
-
-        <!-- Control Panel -->
-        <section class="glass-card mb-12">
-            <h3 class="section-title">Vehicle Control</h3>
-
-            <div class="flex flex-col md:flex-row gap-4">
-                <input
-                    id="carNumber"
-                    placeholder="Vehicle Number (MH12AB1234)"
-                    class="flex-1 px-4 py-3 rounded-xl bg-white/70 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-
-                <button onclick="parkCar()" class="btn-success">
-                    Park Vehicle
-                </button>
-
-                <button onclick="removeCar()" class="btn-danger">
-                    Remove Vehicle
-                </button>
-            </div>
-        </section>
-
-        <!-- Slots -->
-        <section>
-            <h3 class="section-title text-white mb-6">
-                Parking Slots
-            </h3>
-
-            <div
-                id="slots"
-                class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"
-            ></div>
-        </section>
-
-    </main>
+<!-- BACKGROUND GLOW -->
+<div class="fixed inset-0 -z-10">
+  <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-neon/30 blur-[180px]"></div>
+  <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-fuchsia-600/20 blur-[180px]"></div>
 </div>
 
-<!-- UI Utilities -->
+<!-- APP -->
+<div class="max-w-7xl mx-auto px-6 py-8">
+
+<!-- HEADER -->
+<header class="flex items-center justify-between mb-12">
+  <div>
+    <h1 class="text-2xl font-semibold tracking-wide">
+      🚗 Smart Parking
+    </h1>
+    <p class="text-muted text-sm">
+      AI-ready parking management dashboard
+    </p>
+  </div>
+
+  <span class="px-4 py-1 rounded-full border border-neon/40 text-neon text-xs tracking-widest">
+    LIVE SYSTEM
+  </span>
+</header>
+
+<!-- STATS -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
+  <div class="card glow">
+    <p class="label">TOTAL SLOTS</p>
+    <h2 class="value">10</h2>
+  </div>
+
+  <div class="card">
+    <p class="label">AVAILABLE</p>
+    <h2 id="availableCount" class="value text-green">0</h2>
+  </div>
+
+  <div class="card">
+    <p class="label">OCCUPIED</p>
+    <h2 id="occupiedCount" class="value text-red">0</h2>
+  </div>
+
+  <div class="card">
+    <p class="label">RATE</p>
+    <h2 class="value">₹20/hr</h2>
+  </div>
+</section>
+
+<!-- ALERT -->
+<div id="alertBox" class="hidden mb-10"></div>
+
+<!-- CONTROL -->
+<section class="card mb-16">
+  <h3 class="section-title">Vehicle Control</h3>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <input
+      id="carNumber"
+      placeholder="Vehicle Number (MH12AB1234)"
+      class="input"
+    />
+
+    <button onclick="parkCar()" class="btn btn-green">
+      Park Vehicle
+    </button>
+
+    <button onclick="removeCar()" class="btn btn-red">
+      Remove Vehicle
+    </button>
+  </div>
+</section>
+
+<!-- SLOTS -->
+<section>
+  <h3 class="section-title mb-6">Parking Grid</h3>
+
+  <div id="slots" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"></div>
+</section>
+
+</div>
+
+<!-- STYLES -->
 <style>
-    .glass-card {
-        background: rgba(255,255,255,0.6);
-        backdrop-filter: blur(12px);
-        border-radius: 1.5rem;
-        padding: 1.5rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
+.card{
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:1.4rem;
+  padding:1.6rem;
+  transition:.35s ease;
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 25px 60px rgba(0,0,0,.6);
+}
 
-    .stat-card {
-        background: rgba(255,255,255,0.65);
-        backdrop-filter: blur(10px);
-        border-radius: 1.25rem;
-        padding: 1.25rem;
-        text-align: center;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
+.glow{
+  box-shadow:0 0 40px rgba(124,124,255,.35);
+}
 
-    .stat-card p {
-        font-size: 0.85rem;
-        color: #475569;
-    }
+.label{
+  font-size:.7rem;
+  letter-spacing:.2em;
+  color:#9ca3af;
+}
 
-    .stat-card h2 {
-        font-size: 1.75rem;
-        font-weight: 700;
-    }
+.value{
+  font-size:1.9rem;
+  font-weight:600;
+}
 
-    .section-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #334155;
-        margin-bottom: 1rem;
-    }
+.section-title{
+  font-size:1.1rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#c7d2fe;
+  margin-bottom:1rem;
+}
 
-    .btn-success {
-        background: linear-gradient(to right, #22c55e, #16a34a);
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 1rem;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
+.input{
+  flex:1;
+  padding:1rem 1.2rem;
+  border-radius:1rem;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.2);
+  color:#e5e7eb;
+  outline:none;
+}
+.input::placeholder{color:#9ca3af;}
 
-    .btn-danger {
-        background: linear-gradient(to right, #ef4444, #dc2626);
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 1rem;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-success:hover,
-    .btn-danger:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
+.btn{
+  padding:1rem 1.6rem;
+  border-radius:1rem;
+  font-weight:500;
+  transition:.25s ease;
+}
+.btn-green{
+  background:linear-gradient(135deg,#2bff88,#16c172);
+}
+.btn-red{
+  background:linear-gradient(135deg,#ff4d6d,#dc2626);
+}
+.btn:hover{
+  transform:scale(1.06);
+}
 </style>
 
 <script src="script.js"></script>
