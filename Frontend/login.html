@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign In / Sign Up -</title>
+
+  <!-- ✅ Load Firebase SDKs FIRST -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body class="font-sans min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center bg-fixed"
+      style="
+        background-image:
+          linear-gradient(to bottom right, rgba(0,0,0,0.35), rgba(0,0,0,0.55)),
+          url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      ">
+
+
+
+  <div class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg p-8 rounded-lg shadow-lg w-full max-w-md">
+
+    <!-- Login Section -->
+    <div id="loginSection">
+      <h1 class="text-2xl font-bold text-center text-indigo-600 mb-6">Sign In to Car-Parking System</h1>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" id="loginEmail" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Enter your email" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Password</label>
+          <input type="password" id="loginPassword" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Enter your password" required />
+        </div>
+        <p class="text-sm text-left mt-1">
+  <a href="#" id="forgotPassword" class="text-indigo-600 hover:underline">
+    Forgot password?
+  </a>
+</p>
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md font-semibold">
+          Sign In
+        </button>
+
+        <button id="googleSignIn" type="button"
+          class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md font-semibold mt-2 flex items-center justify-center">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 mr-2" /> 
+          Sign in with Google
+        </button>
+      </form>
+
+      <p class="text-sm text-center text-gray-500 mt-4">
+        Don't have an account?
+        <a href="#" class="text-indigo-600 hover:underline" id="showSignup">Sign up</a>
+      </p>
+    </div>
+
+    <!-- Signup Section -->
+    <div id="signupSection" style="display: none;">
+      <h1 class="text-2xl font-bold text-center text-indigo-600 mb-6">Create Your Account</h1>
+      <form id="signupForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" id="signupEmail" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Enter your email" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Password</label>
+          <input type="password" id="signupPassword" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Enter your password" required />
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <input type="password" id="signupConfirm" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Confirm password" required />
+        </div>
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-semibold">
+          Create Account
+        </button>
+      </form>
+
+      <p class="text-sm text-center text-gray-500 mt-4">
+        Already have an account?
+        <a href="#" class="text-indigo-600 hover:underline" id="showLogin">Sign in</a>
+      </p>
+    </div>
+  </div>
+<!-- 🔐 Reset Password Modal -->
+<div id="resetModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-[99999]">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+
+    <h2 class="text-xl font-bold text-indigo-600 mb-4 text-center">Reset Password</h2>
+
+    <p class="text-gray-700 text-sm mb-3">Enter your new password.</p>
+
+    <input type="password" id="newPassword"
+      class="w-full px-3 py-2 border rounded-md mb-3"
+      placeholder="New Password" />
+
+    <input type="password" id="confirmNewPassword"
+      class="w-full px-3 py-2 border rounded-md mb-4"
+      placeholder="Confirm Password" />
+
+    <button id="resetSubmit"
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md font-semibold">
+      Update Password
+    </button>
+
+    <button id="resetCancel"
+      class="w-full mt-2 bg-gray-400 hover:bg-gray-500 text-white py-2 rounded-md font-semibold">
+      Cancel
+    </button>
+
+  </div>
+</div>
+
+  <!-- ✅ Firebase + Auth Logic -->
+  <script>
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBEyRxlEO4JKzeRBqLTBqUQS-abtp58eaw",
+      authDomain: "pulsevoice-1ef60.firebaseapp.com",
+      projectId: "pulsevoice-1ef60",
+      storageBucket: "pulsevoice-1ef60.appspot.com",
+      messagingSenderId: "26160235551",
+      appId: "1:26160235551:web:6fb3abfc1f00f0284c812a"
+    };
+
+    // ✅ Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    console.log("Firebase initialized:", firebase.apps.length);
+// 🔔 Toast function
+function showToast(message, color = "bg-gray-900") {
+  const toast = document.getElementById("toast");
+
+ toast.className =
+  `fixed top-6 right-6 ${color} text-white px-4 py-2 rounded-md 
+   pointer-events-none transition-all duration-500 transform 
+   opacity-0 translate-y-4 z-[99999]`;
+  toast.textContent = message;
+
+  // Force reflow to restart animation
+  void toast.offsetWidth;
+
+  toast.classList.remove("opacity-0", "translate-y-4");
+  toast.classList.add("opacity-100", "translate-y-0");
+
+  setTimeout(() => {
+    toast.classList.remove("opacity-100", "translate-y-0");
+    toast.classList.add("opacity-0", "translate-y-4");
+  }, 3000);
+}
+
+    // Switch between login/signup
+    document.getElementById("showSignup").onclick = e => {
+      e.preventDefault();
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("signupSection").style.display = "block";
+    };
+
+    document.getElementById("showLogin").onclick = e => {
+      e.preventDefault();
+      document.getElementById("signupSection").style.display = "none";
+      document.getElementById("loginSection").style.display = "block";
+    };
+
+    // Signup
+    document.getElementById("signupForm").onsubmit = e => {
+      e.preventDefault();
+      const email = signupEmail.value.trim();
+      const pass = signupPassword.value;
+      const confirm = signupConfirm.value;
+
+      if (pass !== confirm) return alert("Passwords do not match!");
+
+      auth.createUserWithEmailAndPassword(email, pass)
+        .then(userCred => {
+          alert("Account created! Logged in as " + userCred.user.email);
+          window.location.href = "home.html";
+        })
+        .catch(err => alert(err.message));
+    };
+
+    // Login
+    document.getElementById("loginForm").onsubmit = e => {
+      e.preventDefault();
+      const email = loginEmail.value.trim();
+      const pass = loginPassword.value;
+
+      auth.signInWithEmailAndPassword(email, pass)
+        .then(userCred => {
+          alert("Welcome back, " + userCred.user.email + "!");
+          window.location.href = "home.html";
+        })
+        .catch(err => alert(err.message));
+    };
+
+    // Google Sign-In
+    document.getElementById("googleSignIn").onclick = () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(result => {
+          alert("Signed in as " + result.user.email);
+          window.location.href = "home.html";
+        })
+        .catch(err => alert(err.message));
+    };
+    // Password Reset
+document.getElementById("forgotPassword").onclick = (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("loginEmail").value.trim();
+
+  if (!email) {
+    showToast("Please enter your email first.", "bg-red-600");
+
+    return;
+  }
+
+  auth.sendPasswordResetEmail(email)
+    .then(() => {
+      showToast("Password reset link sent!", "bg-green-600");
+
+    })
+    .catch(err => {
+      showToast(err.message, "bg-red-600");
+
+    });
+};
+// 🎯 Detect password-reset mode
+const urlParams = new URLSearchParams(window.location.search);
+const mode = urlParams.get("mode");
+const oobCode = urlParams.get("oobCode");
+
+if (mode === "resetPassword" && oobCode) {
+  document.getElementById("resetModal").classList.remove("hidden");
+}
+
+// 🎯 Handle Password Reset
+document.getElementById("resetSubmit").onclick = () => {
+  const pass1 = document.getElementById("newPassword").value;
+  const pass2 = document.getElementById("confirmNewPassword").value;
+
+  if (pass1.length < 6) {
+    showToast("Password must be at least 6 characters", "bg-red-600");
+    return;
+  }
+  if (pass1 !== pass2) {
+    showToast("Passwords do not match!", "bg-red-600");
+    return;
+  }
+
+  auth.confirmPasswordReset(oobCode, pass1)
+    .then(() => {
+      showToast("Password updated successfully!", "bg-green-600");
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    })
+    .catch(err => {
+      showToast(err.message, "bg-red-600");
+    });
+};
+
+// ❌ Cancel modal
+document.getElementById("resetCancel").onclick = () => {
+  document.getElementById("resetModal").classList.add("hidden");
+};
+
+  </script>
+<!-- 🔔 Toast Notification -->
+<div id="toast"
+  class="fixed top-6 right-6 bg-gray-900 text-white px-4 py-2 rounded-md opacity-0 pointer-events-none transition-all duration-500 transform translate-y-4 z-[99999]">
+</div>
+
+</body>
+</html>
