@@ -14,16 +14,7 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 </head>
 
-<body class="font-sans min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center bg-fixed"
-      style="
-        background-image:
-          linear-gradient(to bottom right, rgba(0,0,0,0.35), rgba(0,0,0,0.55)),
-          url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1920&q=80');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-      ">
+<body class="font-sans min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center bg-fixed">
 
 
 
@@ -186,7 +177,7 @@ function showToast(message, color = "bg-gray-900") {
       auth.createUserWithEmailAndPassword(email, pass)
         .then(userCred => {
           alert("Account created! Logged in as " + userCred.user.email);
-          window.location.href = "home.html";
+          window.location.href = "index.html";
         })
         .catch(err => alert(err.message));
     };
@@ -200,7 +191,7 @@ function showToast(message, color = "bg-gray-900") {
       auth.signInWithEmailAndPassword(email, pass)
         .then(userCred => {
           alert("Welcome back, " + userCred.user.email + "!");
-          window.location.href = "home.html";
+          window.location.href = "index.html";
         })
         .catch(err => alert(err.message));
     };
@@ -211,7 +202,7 @@ function showToast(message, color = "bg-gray-900") {
       auth.signInWithPopup(provider)
         .then(result => {
           alert("Signed in as " + result.user.email);
-          window.location.href = "home.html";
+          window.location.href = "index.html";
         })
         .catch(err => alert(err.message));
     };
@@ -264,7 +255,7 @@ document.getElementById("resetSubmit").onclick = () => {
     .then(() => {
       showToast("Password updated successfully!", "bg-green-600");
       setTimeout(() => {
-        window.location.href = "index.html";
+        window.location.href = "login.html";
       }, 1500);
     })
     .catch(err => {
