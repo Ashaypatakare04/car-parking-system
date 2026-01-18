@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart Parking • Pro Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: "#06070c",
+        panel: "rgba(255,255,255,0.06)",
+        stroke: "rgba(255,255,255,0.12)",
+        neon: "#7c7cff",
+        green: "#2bff88",
+        red: "#ff4d6d",
+        text: "#e5e7eb",
+        muted: "#9ca3af"
+      }
+    }
+  }
+}
+</script>
+</head>
+
+<body class="bg-bg text-text overflow-x-hidden">
+
+<!-- BACKGROUND GLOW -->
+<div class="fixed inset-0 -z-10">
+  <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-neon/30 blur-[180px]"></div>
+  <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-fuchsia-600/20 blur-[180px]"></div>
+</div>
+
+<!-- APP -->
+<div class="max-w-7xl mx-auto px-6 py-8">
+
+<!-- HEADER -->
+<header class="flex items-center justify-between mb-12">
+  <div>
+    <h1 class="text-2xl font-semibold tracking-wide">
+      🚗 Smart Parking
+    </h1>
+    <p class="text-muted text-sm">
+      AI-ready parking management dashboard
+    </p>
+  </div>
+
+  <span class="px-4 py-1 rounded-full border border-neon/40 text-neon text-xs tracking-widest">
+    LIVE SYSTEM
+  </span>
+</header>
+
+<!-- STATS -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
+  <div class="card glow">
+    <p class="label">TOTAL SLOTS</p>
+    <h2 class="value">10</h2>
+  </div>
+
+  <div class="card">
+    <p class="label">AVAILABLE</p>
+    <h2 id="availableCount" class="value text-green">0</h2>
+  </div>
+
+  <div class="card">
+    <p class="label">OCCUPIED</p>
+    <h2 id="occupiedCount" class="value text-red">0</h2>
+  </div>
+
+  <div class="card">
+    <p class="label">RATE</p>
+    <h2 class="value">₹20/hr</h2>
+  </div>
+</section>
+
+<!-- ALERT -->
+<div id="alertBox" class="hidden mb-10"></div>
+
+<!-- CONTROL -->
+<section class="card mb-16">
+  <h3 class="section-title">Vehicle Control</h3>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <input
+      id="carNumber"
+      placeholder="Vehicle Number (MH12AB1234)"
+      class="input"
+    />
+
+    <button onclick="parkCar()" class="btn btn-green">
+      Park Vehicle
+    </button>
+
+    <button onclick="removeCar()" class="btn btn-red">
+      Remove Vehicle
+    </button>
+  </div>
+</section>
+
+<!-- SLOTS -->
+<section>
+  <h3 class="section-title mb-6">Parking Grid</h3>
+
+  <div id="slots" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"></div>
+</section>
+
+</div>
+
+<!-- STYLES -->
+<style>
+.card{
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:1.4rem;
+  padding:1.6rem;
+  transition:.35s ease;
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 25px 60px rgba(0,0,0,.6);
+}
+
+.glow{
+  box-shadow:0 0 40px rgba(124,124,255,.35);
+}
+
+.label{
+  font-size:.7rem;
+  letter-spacing:.2em;
+  color:#9ca3af;
+}
+
+.value{
+  font-size:1.9rem;
+  font-weight:600;
+}
+
+.section-title{
+  font-size:1.1rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#c7d2fe;
+  margin-bottom:1rem;
+}
+
+.input{
+  flex:1;
+  padding:1rem 1.2rem;
+  border-radius:1rem;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.2);
+  color:#e5e7eb;
+  outline:none;
+}
+.input::placeholder{color:#9ca3af;}
+
+.btn{
+  padding:1rem 1.6rem;
+  border-radius:1rem;
+  font-weight:500;
+  transition:.25s ease;
+}
+.btn-green{
+  background:linear-gradient(135deg,#2bff88,#16c172);
+}
+.btn-red{
+  background:linear-gradient(135deg,#ff4d6d,#dc2626);
+}
+.btn:hover{
+  transform:scale(1.06);
+}
+</style>
+
+<script src="script.js"></script>
+</body>
+</html>

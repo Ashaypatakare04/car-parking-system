@@ -2,180 +2,220 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Smart Parking • Pro Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Parking System — Dark</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        bg: "#06070c",
-        panel: "rgba(255,255,255,0.06)",
-        stroke: "rgba(255,255,255,0.12)",
-        neon: "#7c7cff",
-        green: "#2bff88",
-        red: "#ff4d6d",
-        text: "#e5e7eb",
-        muted: "#9ca3af"
-      }
-    }
+<style>
+/* ================= GLOBAL ================= */
+html, body {
+  height: 100%;
+  font-family: Inter, system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ================= BACKGROUND ================= */
+.hero-bg {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(2,6,23,0.55),
+      rgba(2,6,23,0.75)
+    ),
+    radial-gradient(circle at 20% 30%, rgba(99,102,241,0.25), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(139,92,246,0.25), transparent 50%),
+    url("https://images.unsplash.com/photo-1506521781263-d8422e82f27a");
+
+  background-size: cover;
+  background-position: center;
+  animation: moveBg 24s ease-in-out infinite alternate;
+}
+
+@keyframes moveBg {
+  to {
+    background-position:
+      center,
+      20% 10%,
+      80% 70%,
+      center;
   }
 }
-</script>
-</head>
 
-<body class="bg-bg text-text overflow-x-hidden">
+/* ================= GLASS CARD ================= */
+.glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.02)
+  );
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+  border: 1px solid rgba(255,255,255,0.12);
 
-<!-- BACKGROUND GLOW -->
-<div class="fixed inset-0 -z-10">
-  <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-neon/30 blur-[180px]"></div>
-  <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-fuchsia-600/20 blur-[180px]"></div>
-</div>
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.55),
+    inset 0 0 60px rgba(255,255,255,0.03),
+    0 0 0 1px rgba(255,255,255,0.06);
 
-<!-- APP -->
-<div class="max-w-7xl mx-auto px-6 py-8">
-
-<!-- HEADER -->
-<header class="flex items-center justify-between mb-12">
-  <div>
-    <h1 class="text-2xl font-semibold tracking-wide">
-      🚗 Smart Parking
-    </h1>
-    <p class="text-muted text-sm">
-      AI-ready parking management dashboard
-    </p>
-  </div>
-
-  <span class="px-4 py-1 rounded-full border border-neon/40 text-neon text-xs tracking-widest">
-    LIVE SYSTEM
-  </span>
-</header>
-
-<!-- STATS -->
-<section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
-  <div class="card glow">
-    <p class="label">TOTAL SLOTS</p>
-    <h2 class="value">10</h2>
-  </div>
-
-  <div class="card">
-    <p class="label">AVAILABLE</p>
-    <h2 id="availableCount" class="value text-green">0</h2>
-  </div>
-
-  <div class="card">
-    <p class="label">OCCUPIED</p>
-    <h2 id="occupiedCount" class="value text-red">0</h2>
-  </div>
-
-  <div class="card">
-    <p class="label">RATE</p>
-    <h2 class="value">₹20/hr</h2>
-  </div>
-</section>
-
-<!-- ALERT -->
-<div id="alertBox" class="hidden mb-10"></div>
-
-<!-- CONTROL -->
-<section class="card mb-16">
-  <h3 class="section-title">Vehicle Control</h3>
-
-  <div class="flex flex-col md:flex-row gap-4">
-    <input
-      id="carNumber"
-      placeholder="Vehicle Number (MH12AB1234)"
-      class="input"
-    />
-
-    <button onclick="parkCar()" class="btn btn-green">
-      Park Vehicle
-    </button>
-
-    <button onclick="removeCar()" class="btn btn-red">
-      Remove Vehicle
-    </button>
-  </div>
-</section>
-
-<!-- SLOTS -->
-<section>
-  <h3 class="section-title mb-6">Parking Grid</h3>
-
-  <div id="slots" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"></div>
-</section>
-
-</div>
-
-<!-- STYLES -->
-<style>
-.card{
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:1.4rem;
-  padding:1.6rem;
-  transition:.35s ease;
-}
-.card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 25px 60px rgba(0,0,0,.6);
+  animation: floatCard 6s ease-in-out infinite;
+  position: relative;
+  transition: transform 0.4s ease;
 }
 
-.glow{
-  box-shadow:0 0 40px rgba(124,124,255,.35);
+.glass:hover {
+  transform: translateY(-6px) scale(1.01);
 }
 
-.label{
-  font-size:.7rem;
-  letter-spacing:.2em;
-  color:#9ca3af;
+@keyframes floatCard {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
-.value{
-  font-size:1.9rem;
-  font-weight:600;
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.06),
+    transparent 60%
+  );
+  pointer-events: none;
 }
 
-.section-title{
-  font-size:1.1rem;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:#c7d2fe;
-  margin-bottom:1rem;
+/* ================= BUTTON ================= */
+.glow-btn {
+  background: linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);
+  background-size: 200% 200%;
+  animation: glowMove 8s ease infinite;
+  box-shadow: 0 20px 50px rgba(99,102,241,.45);
 }
 
-.input{
-  flex:1;
-  padding:1rem 1.2rem;
-  border-radius:1rem;
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.2);
-  color:#e5e7eb;
-  outline:none;
+@keyframes glowMove {
+  to { background-position: 100% 50%; }
 }
-.input::placeholder{color:#9ca3af;}
 
-.btn{
-  padding:1rem 1.6rem;
-  border-radius:1rem;
-  font-weight:500;
-  transition:.25s ease;
+.glow-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 25px 60px rgba(99,102,241,0.6),
+    0 0 40px rgba(236,72,153,0.35);
 }
-.btn-green{
-  background:linear-gradient(135deg,#2bff88,#16c172);
+
+/* secondary button */
+.secondary-btn {
+  background: rgba(255,255,255,0.03);
 }
-.btn-red{
-  background:linear-gradient(135deg,#ff4d6d,#dc2626);
+.secondary-btn:hover {
+  background: rgba(255,255,255,0.08);
 }
-.btn:hover{
-  transform:scale(1.06);
+
+/* ================= SCROLL REVEAL ================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.reveal.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal.delay-1 { transition-delay: 0.15s; }
+.reveal.delay-2 { transition-delay: 0.3s; }
+.reveal.delay-3 { transition-delay: 0.45s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 </style>
+</head>
 
-<script src="script.js"></script>
+<body class="hero-bg flex items-center justify-center text-white relative min-h-screen">
+
+<!-- VIGNETTE -->
+<div class="pointer-events-none fixed inset-0
+bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.55))]">
+</div>
+
+<!-- NOISE -->
+<div class="pointer-events-none fixed inset-0 opacity-[0.04]"
+style="background-image:url('https://www.transparenttextures.com/patterns/noise.png')">
+</div>
+
+<!-- HERO CARD -->
+<div class="glass w-full max-w-4xl mx-6 p-14 rounded-[36px] text-center z-10">
+
+  <!-- TITLE -->
+  <h1 class="text-4xl md:text-6xl font-extrabold mb-6
+  bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400
+  bg-clip-text text-transparent reveal">
+    Smart Parking System
+  </h1>
+
+  <!-- SUBTITLE -->
+  <p class="text-lg md:text-xl text-indigo-200 mb-12 max-w-2xl mx-auto reveal delay-1">
+    A futuristic, role-based parking management platform
+    designed for modern smart cities
+  </p>
+
+  <!-- CTA -->
+  <div class="flex justify-center gap-8 flex-wrap reveal delay-2">
+    <a href="auth-dark.html"
+      class="glow-btn px-12 py-4 rounded-2xl font-semibold text-white">
+      Enter System
+    </a>
+
+    <a href="#features"
+      class="secondary-btn px-12 py-4 rounded-2xl border border-white/30 transition">
+      View Concept
+    </a>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="mt-14 flex justify-center gap-4 text-sm text-indigo-200 opacity-80 reveal delay-3">
+    <span>HTML</span>
+    <span>Tailwind CSS</span>
+    <span>Firebase Auth</span>
+    <span>Firestore</span>
+  </div>
+
+  <!-- MICRO COPY -->
+  <p class="mt-10 text-xs tracking-widest uppercase opacity-60 reveal delay-3">
+    Design-heavy portfolio project · Real-world authentication flow
+  </p>
+</div>
+
+<!-- SCROLL HINT -->
+<p class="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs opacity-50">
+  Scroll to explore
+</p>
+
+<!-- ================= REVEAL SCRIPT ================= -->
+<script>
+const reveals = document.querySelectorAll(".reveal");
+
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.15 }
+);
+
+reveals.forEach(el => observer.observe(el));
+</script>
+
 </body>
 </html>
