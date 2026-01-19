@@ -1,278 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sign In / Sign Up -</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DriveFlow — Smart Parking</title>
 
-  <!-- ✅ Load Firebase SDKs FIRST -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- ================= GOOGLE FONTS ================= -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+<!-- ================= FIREBASE ================= -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<!-- ================= TAILWIND ================= -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+<style>
+/* ================= GLOBAL ================= */
+body {
+  font-family: 'Inter', sans-serif;
+  background:
+    linear-gradient(to bottom, rgba(2,6,23,0.65), rgba(2,6,23,0.9)),
+    url("https://images.unsplash.com/photo-1506521781263-d8422e82f27a");
+  background-size: cover;
+  background-position: center;
+}
+
+/* ================= BRAND ================= */
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ================= GLASS CARD ================= */
+.auth-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.10),
+    rgba(255,255,255,0.03)
+  );
+  backdrop-filter: blur(26px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 28px;
+  box-shadow:
+    0 40px 90px rgba(0,0,0,0.6),
+    inset 0 0 60px rgba(255,255,255,0.03);
+  animation: float 7s ease-in-out infinite;
+}
+
+/* Floating motion */
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ================= INPUT ================= */
+.input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+}
+.input::placeholder {
+  color: rgba(255,255,255,0.55);
+}
+.input:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139,92,246,0.25);
+}
+
+/* ================= BUTTON ================= */
+.primary-btn {
+  background: linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);
+  font-weight: 600;
+}
+.primary-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ================= FEATURES ================= */
+.feature-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.feature-list li span {
+  opacity: 0.9;
+}
+</style>
 </head>
 
-<body class="font-sans min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center bg-fixed">
+<body class="min-h-screen text-white relative">
 
+<!-- Focus Glow -->
+<div class="absolute inset-0 flex items-center justify-end pr-20 pointer-events-none">
+  <div class="w-[420px] h-[420px] rounded-full 
+    bg-gradient-to-r from-indigo-500/20 to-pink-500/20 blur-3xl">
+  </div>
+</div>
 
+<div class="min-h-screen flex flex-col lg:flex-row">
 
-  <div class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg p-8 rounded-lg shadow-lg w-full max-w-md">
+  <!-- ================= LEFT: LANDING ================= -->
+  <section class="flex-1 flex items-center px-12 py-20">
+    <div class="max-w-xl">
 
-    <!-- Login Section -->
-    <div id="loginSection">
-      <h1 class="text-2xl font-bold text-center text-indigo-600 mb-6">Sign In to Car-Parking System</h1>
-      <form id="loginForm" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Email</label>
-          <input type="email" id="loginEmail" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Enter your email" required />
+      <!-- BRAND -->
+      <h1 class="brand text-5xl font-bold mb-2
+        bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400
+        bg-clip-text text-transparent">
+        DriveFlow
+      </h1>
+
+      <!-- ACCENT -->
+      <div class="w-16 h-1 rounded-full 
+        bg-gradient-to-r from-indigo-500 to-pink-500 mb-6">
+      </div>
+
+      <!-- SUBTITLE -->
+      <p class="text-lg font-medium mb-8
+        bg-gradient-to-r from-indigo-200 to-purple-200
+        bg-clip-text text-transparent max-w-md leading-relaxed">
+        Smart, role-based parking management for modern cities.
+      </p>
+
+      <!-- SECTION LABEL -->
+      <p class="text-xs uppercase tracking-widest text-indigo-300/70 mb-4">
+        Key capabilities
+      </p>
+
+      <!-- FEATURES -->
+      <div class="relative pl-6">
+        <div class="absolute left-0 top-1 h-full w-[2px]
+          bg-gradient-to-b from-indigo-500/60 to-pink-500/20 rounded-full">
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Password</label>
-          <input type="password" id="loginPassword" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Enter your password" required />
-        </div>
-        <p class="text-sm text-left mt-1">
-  <a href="#" id="forgotPassword" class="text-indigo-600 hover:underline">
-    Forgot password?
-  </a>
-</p>
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md font-semibold">
+
+        <ul class="feature-list space-y-4 text-indigo-100 text-sm">
+          <li>🚗 <span>Real-time parking availability</span></li>
+          <li>🧑‍💼 <span>Admin & user role-based access</span></li>
+          <li>📍 <span>Smart location-based parking</span></li>
+          <li>🔐 <span>Secure Firebase authentication</span></li>
+        </ul>
+      </div>
+
+      <!-- BADGE -->
+      <div class="mt-12 inline-flex items-center gap-2
+        px-4 py-2 rounded-full
+        bg-white/5 border border-white/10
+        text-xs tracking-wide text-indigo-200/70">
+        Design-heavy portfolio project · Real-world auth flow
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= RIGHT: AUTH ================= -->
+  <section class="flex-1 flex items-center justify-center px-6 py-20">
+    <div class="auth-card w-full max-w-md p-10 z-10">
+
+      <!-- TOGGLE -->
+      <div class="flex mb-8 bg-white/10 rounded-xl p-1 text-sm">
+        <button id="showLogin"
+          class="flex-1 py-2 rounded-lg bg-white/20 font-medium">
           Sign In
         </button>
-
-        <button id="googleSignIn" type="button"
-          class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md font-semibold mt-2 flex items-center justify-center">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 mr-2" /> 
-          Sign in with Google
+        <button id="showSignup"
+          class="flex-1 py-2 rounded-lg opacity-70">
+          Sign Up
         </button>
-      </form>
+      </div>
 
-      <p class="text-sm text-center text-gray-500 mt-4">
-        Don't have an account?
-        <a href="#" class="text-indigo-600 hover:underline" id="showSignup">Sign up</a>
-      </p>
+      <!-- LOGIN -->
+      <div id="loginSection">
+        <form id="loginForm" class="space-y-4">
+          <input id="loginEmail" type="email" placeholder="Email"
+            class="input w-full px-4 py-3 rounded-lg">
+          <input id="loginPassword" type="password" placeholder="Password"
+            class="input w-full px-4 py-3 rounded-lg">
+
+          <div class="text-right text-sm">
+            <a href="#" id="forgotPassword" class="text-indigo-300 hover:underline">
+              Forgot password?
+            </a>
+          </div>
+
+          <button class="primary-btn w-full py-3 rounded-xl">
+            Sign In
+          </button>
+
+          <button id="googleSignIn" type="button"
+            class="w-full py-3 rounded-xl bg-white/10 hover:bg-white/20
+            flex items-center justify-center gap-3 text-sm">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
+            Continue with Google
+          </button>
+        </form>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signupSection" class="hidden">
+        <form id="signupForm" class="space-y-4">
+          <input id="signupEmail" type="email" placeholder="Email"
+            class="input w-full px-4 py-3 rounded-lg">
+          <input id="signupPassword" type="password" placeholder="Password"
+            class="input w-full px-4 py-3 rounded-lg">
+          <input id="signupConfirm" type="password" placeholder="Confirm Password"
+            class="input w-full px-4 py-3 rounded-lg">
+
+          <button class="primary-btn w-full py-3 rounded-xl">
+            Create Account
+          </button>
+        </form>
+      </div>
+
     </div>
-
-    <!-- Signup Section -->
-    <div id="signupSection" style="display: none;">
-      <h1 class="text-2xl font-bold text-center text-indigo-600 mb-6">Create Your Account</h1>
-      <form id="signupForm" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Email</label>
-          <input type="email" id="signupEmail" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Enter your email" required />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Password</label>
-          <input type="password" id="signupPassword" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Enter your password" required />
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Confirm Password</label>
-          <input type="password" id="signupConfirm" class="mt-1 w-full px-4 py-2 border rounded-md" placeholder="Confirm password" required />
-        </div>
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-semibold">
-          Create Account
-        </button>
-      </form>
-
-      <p class="text-sm text-center text-gray-500 mt-4">
-        Already have an account?
-        <a href="#" class="text-indigo-600 hover:underline" id="showLogin">Sign in</a>
-      </p>
-    </div>
-  </div>
-<!-- 🔐 Reset Password Modal -->
-<div id="resetModal"
-  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-[99999]">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-
-    <h2 class="text-xl font-bold text-indigo-600 mb-4 text-center">Reset Password</h2>
-
-    <p class="text-gray-700 text-sm mb-3">Enter your new password.</p>
-
-    <input type="password" id="newPassword"
-      class="w-full px-3 py-2 border rounded-md mb-3"
-      placeholder="New Password" />
-
-    <input type="password" id="confirmNewPassword"
-      class="w-full px-3 py-2 border rounded-md mb-4"
-      placeholder="Confirm Password" />
-
-    <button id="resetSubmit"
-      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md font-semibold">
-      Update Password
-    </button>
-
-    <button id="resetCancel"
-      class="w-full mt-2 bg-gray-400 hover:bg-gray-500 text-white py-2 rounded-md font-semibold">
-      Cancel
-    </button>
-
-  </div>
+  </section>
 </div>
 
-  <!-- ✅ Firebase + Auth Logic -->
-  <script>
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBEyRxlEO4JKzeRBqLTBqUQS-abtp58eaw",
-      authDomain: "pulsevoice-1ef60.firebaseapp.com",
-      projectId: "pulsevoice-1ef60",
-      storageBucket: "pulsevoice-1ef60.appspot.com",
-      messagingSenderId: "26160235551",
-      appId: "1:26160235551:web:6fb3abfc1f00f0284c812a"
-    };
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyBEyRxlEO4JKzeRBqLTBqUQS-abtp58eaw",
+  authDomain: "pulsevoice-1ef60.firebaseapp.com"
+});
 
-    // ✅ Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+const auth = firebase.auth();
 
-    console.log("Firebase initialized:", firebase.apps.length);
-// 🔔 Toast function
-function showToast(message, color = "bg-gray-900") {
-  const toast = document.getElementById("toast");
+// Toggle
+showSignup.onclick = () => {
+  signupSection.classList.remove("hidden");
+  loginSection.classList.add("hidden");
+  showSignup.classList.add("bg-white/20");
+  showLogin.classList.remove("bg-white/20");
+};
 
- toast.className =
-  `fixed top-6 right-6 ${color} text-white px-4 py-2 rounded-md 
-   pointer-events-none transition-all duration-500 transform 
-   opacity-0 translate-y-4 z-[99999]`;
-  toast.textContent = message;
+showLogin.onclick = () => {
+  loginSection.classList.remove("hidden");
+  signupSection.classList.add("hidden");
+  showLogin.classList.add("bg-white/20");
+  showSignup.classList.remove("bg-white/20");
+};
 
-  // Force reflow to restart animation
-  void toast.offsetWidth;
-
-  toast.classList.remove("opacity-0", "translate-y-4");
-  toast.classList.add("opacity-100", "translate-y-0");
-
-  setTimeout(() => {
-    toast.classList.remove("opacity-100", "translate-y-0");
-    toast.classList.add("opacity-0", "translate-y-4");
-  }, 3000);
-}
-
-    // Switch between login/signup
-    document.getElementById("showSignup").onclick = e => {
-      e.preventDefault();
-      document.getElementById("loginSection").style.display = "none";
-      document.getElementById("signupSection").style.display = "block";
-    };
-
-    document.getElementById("showLogin").onclick = e => {
-      e.preventDefault();
-      document.getElementById("signupSection").style.display = "none";
-      document.getElementById("loginSection").style.display = "block";
-    };
-
-    // Signup
-    document.getElementById("signupForm").onsubmit = e => {
-      e.preventDefault();
-      const email = signupEmail.value.trim();
-      const pass = signupPassword.value;
-      const confirm = signupConfirm.value;
-
-      if (pass !== confirm) return alert("Passwords do not match!");
-
-      auth.createUserWithEmailAndPassword(email, pass)
-        .then(userCred => {
-          alert("Account created! Logged in as " + userCred.user.email);
-          window.location.href = "index.html";
-        })
-        .catch(err => alert(err.message));
-    };
-
-    // Login
-    document.getElementById("loginForm").onsubmit = e => {
-      e.preventDefault();
-      const email = loginEmail.value.trim();
-      const pass = loginPassword.value;
-
-      auth.signInWithEmailAndPassword(email, pass)
-        .then(userCred => {
-          alert("Welcome back, " + userCred.user.email + "!");
-          window.location.href = "index.html";
-        })
-        .catch(err => alert(err.message));
-    };
-
-    // Google Sign-In
-    document.getElementById("googleSignIn").onclick = () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then(result => {
-          alert("Signed in as " + result.user.email);
-          window.location.href = "index.html";
-        })
-        .catch(err => alert(err.message));
-    };
-    // Password Reset
-document.getElementById("forgotPassword").onclick = (e) => {
+// Login
+loginForm.onsubmit = e => {
   e.preventDefault();
-
-  const email = document.getElementById("loginEmail").value.trim();
-
-  if (!email) {
-    showToast("Please enter your email first.", "bg-red-600");
-
-    return;
-  }
-
-  auth.sendPasswordResetEmail(email)
-    .then(() => {
-      showToast("Password reset link sent!", "bg-green-600");
-
-    })
-    .catch(err => {
-      showToast(err.message, "bg-red-600");
-
-    });
-};
-// 🎯 Detect password-reset mode
-const urlParams = new URLSearchParams(window.location.search);
-const mode = urlParams.get("mode");
-const oobCode = urlParams.get("oobCode");
-
-if (mode === "resetPassword" && oobCode) {
-  document.getElementById("resetModal").classList.remove("hidden");
-}
-
-// 🎯 Handle Password Reset
-document.getElementById("resetSubmit").onclick = () => {
-  const pass1 = document.getElementById("newPassword").value;
-  const pass2 = document.getElementById("confirmNewPassword").value;
-
-  if (pass1.length < 6) {
-    showToast("Password must be at least 6 characters", "bg-red-600");
-    return;
-  }
-  if (pass1 !== pass2) {
-    showToast("Passwords do not match!", "bg-red-600");
-    return;
-  }
-
-  auth.confirmPasswordReset(oobCode, pass1)
-    .then(() => {
-      showToast("Password updated successfully!", "bg-green-600");
-      setTimeout(() => {
-        window.location.href = "login.html";
-      }, 1500);
-    })
-    .catch(err => {
-      showToast(err.message, "bg-red-600");
-    });
+  auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value)
+    .then(() => location.href = "dashboard.html")
+    .catch(err => alert(err.message));
 };
 
-// ❌ Cancel modal
-document.getElementById("resetCancel").onclick = () => {
-  document.getElementById("resetModal").classList.add("hidden");
+// Signup
+signupForm.onsubmit = e => {
+  e.preventDefault();
+  if (signupPassword.value !== signupConfirm.value)
+    return alert("Passwords do not match");
+  auth.createUserWithEmailAndPassword(signupEmail.value, signupPassword.value)
+    .then(() => location.href = "dashboard.html")
+    .catch(err => alert(err.message));
 };
 
-  </script>
-<!-- 🔔 Toast Notification -->
-<div id="toast"
-  class="fixed top-6 right-6 bg-gray-900 text-white px-4 py-2 rounded-md opacity-0 pointer-events-none transition-all duration-500 transform translate-y-4 z-[99999]">
-</div>
+// Google
+googleSignIn.onclick = () => {
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .then(() => location.href = "dashboard.html")
+    .catch(err => alert(err.message));
+};
+
+// Reset
+forgotPassword.onclick = e => {
+  e.preventDefault();
+  if (!loginEmail.value) return alert("Enter email");
+  auth.sendPasswordResetEmail(loginEmail.value)
+    .then(() => alert("Reset link sent"))
+    .catch(err => alert(err.message));
+};
+</script>
 
 </body>
 </html>
