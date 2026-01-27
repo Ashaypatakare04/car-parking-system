@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Smart Parking • Pro Dashboard</title>
+<title>DriveFlow • Pro Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- Tailwind CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
 <script>
 tailwind.config = {
@@ -35,30 +40,26 @@ tailwind.config = {
   <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-fuchsia-600/20 blur-[180px]"></div>
 </div>
 
-<!-- APP -->
 <div class="max-w-7xl mx-auto px-6 py-8">
 
 <!-- HEADER -->
 <header class="flex items-center justify-between mb-12">
   <div>
-    <h1 class="text-2xl font-semibold tracking-wide">
-      🚗 Smart Parking
-    </h1>
-    <p class="text-muted text-sm">
-      AI-ready parking management dashboard
-    </p>
+    <h1 class="text-2xl font-semibold tracking-wide">🚗 DriveFlow</h1>
+    <p class="text-muted text-sm">Smart parking management dashboard</p>
   </div>
 
-  <span class="px-4 py-1 rounded-full border border-neon/40 text-neon text-xs tracking-widest">
-    LIVE SYSTEM
-  </span>
+  <button id="logoutBtn"
+    class="px-4 py-2 rounded-full border border-neon/40 text-neon text-xs tracking-widest hover:bg-neon/10">
+    LOGOUT
+  </button>
 </header>
 
 <!-- STATS -->
 <section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
   <div class="card glow">
     <p class="label">TOTAL SLOTS</p>
-    <h2 class="value">10</h2>
+    <h2 id="totalCount" class="value">10</h2>
   </div>
 
   <div class="card">
@@ -85,8 +86,7 @@ tailwind.config = {
   <h3 class="section-title">Vehicle Control</h3>
 
   <div class="flex flex-col md:flex-row gap-4">
-    <input
-      id="carNumber"
+    <input id="carNumber"
       placeholder="Vehicle Number (MH12AB1234)"
       class="input"
     />
@@ -104,7 +104,6 @@ tailwind.config = {
 <!-- SLOTS -->
 <section>
   <h3 class="section-title mb-6">Parking Grid</h3>
-
   <div id="slots" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"></div>
 </section>
 
@@ -124,21 +123,14 @@ tailwind.config = {
   transform:translateY(-6px);
   box-shadow:0 25px 60px rgba(0,0,0,.6);
 }
-
-.glow{
-  box-shadow:0 0 40px rgba(124,124,255,.35);
-}
+.glow{ box-shadow:0 0 40px rgba(124,124,255,.35); }
 
 .label{
   font-size:.7rem;
   letter-spacing:.2em;
   color:#9ca3af;
 }
-
-.value{
-  font-size:1.9rem;
-  font-weight:600;
-}
+.value{ font-size:1.9rem; font-weight:600; }
 
 .section-title{
   font-size:1.1rem;
@@ -165,17 +157,12 @@ tailwind.config = {
   font-weight:500;
   transition:.25s ease;
 }
-.btn-green{
-  background:linear-gradient(135deg,#2bff88,#16c172);
-}
-.btn-red{
-  background:linear-gradient(135deg,#ff4d6d,#eca50e);
-}
-.btn:hover{
-  transform:scale(1.06);
-}
+.btn-green{ background:linear-gradient(135deg,#2bff88,#16c172); }
+.btn-red{ background:linear-gradient(135deg,#ff4d6d,#eca50e); }
+.btn:hover{ transform:scale(1.06); }
 </style>
 
-<script src="scripts/script.js"></script>
+<!-- LOGIC -->
+<script src="scripts/home.js"></script>
 </body>
 </html>
