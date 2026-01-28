@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DriveFlow • Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: "#070911",
+        panel: "rgba(255,255,255,0.06)",
+        stroke: "rgba(255,255,255,0.12)",
+        primary: "#7c7cff",
+        green: "#2bff88",
+        red: "#ff4d6d",
+        text: "#e5e7eb",
+        muted: "#9ca3af"
+      }
+    }
+  }
+}
+</script>
+</head>
+
+<body class="bg-bg text-text">
+
+<!-- BACKGROUND -->
+<div class="fixed inset-0 -z-10">
+  <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-primary/20 blur-[180px]"></div>
+  <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-fuchsia-600/10 blur-[180px]"></div>
+</div>
+
+<div class="max-w-7xl mx-auto px-6 py-8">
+
+<!-- HEADER -->
+<header class="flex items-center justify-between mb-14">
+  <div>
+    <h1 class="text-2xl font-semibold tracking-wide">
+      🛠 Admin Panel
+    </h1>
+    <p class="text-muted text-sm">
+      System management & controls
+    </p>
+  </div>
+
+  <button id="logoutBtn"
+    class="px-4 py-2 rounded-full border border-primary/40 text-primary text-xs tracking-widest hover:bg-primary/10">
+    LOGOUT
+  </button>
+</header>
+
+<!-- SYSTEM STATS -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
+
+  <div class="card glow">
+    <p class="label">TOTAL SLOTS</p>
+    <h2 class="value">10</h2>
+  </div>
+
+  <div class="card">
+    <p class="label">ACTIVE USERS</p>
+    <h2 class="value">6</h2>
+  </div>
+
+  <div class="card">
+    <p class="label">OCCUPANCY</p>
+    <h2 class="value text-green">60%</h2>
+  </div>
+
+  <div class="card">
+    <p class="label">SYSTEM STATUS</p>
+    <h2 class="value text-green">LIVE</h2>
+  </div>
+
+</section>
+
+<!-- SLOT MANAGEMENT -->
+<section class="card mb-16">
+  <h3 class="section-title">Slot Management</h3>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <input id="slotCount"
+      type="number"
+      placeholder="Total slots"
+      class="input"
+    />
+
+    <button class="btn btn-green" onclick="updateSlots()">
+      Update Slots
+    </button>
+
+    <button class="btn btn-red" onclick="resetSystem()">
+      Reset System
+    </button>
+  </div>
+</section>
+
+<!-- USERS -->
+<section>
+  <h3 class="section-title mb-6">Recent Users</h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <div class="card">
+      <p class="label">USER</p>
+      <h4 class="value text-base">user1@gmail.com</h4>
+      <p class="text-muted text-sm mt-1">Role: User</p>
+    </div>
+
+    <div class="card">
+      <p class="label">USER</p>
+      <h4 class="value text-base">admin@driveflow.io</h4>
+      <p class="text-muted text-sm mt-1">Role: Admin</p>
+    </div>
+
+    <div class="card">
+      <p class="label">USER</p>
+      <h4 class="value text-base">demo@parking.com</h4>
+      <p class="text-muted text-sm mt-1">Role: User</p>
+    </div>
+
+  </div>
+</section>
+
+</div>
+
+<!-- STYLES -->
+<style>
+.card{
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:1.4rem;
+  padding:1.6rem;
+  transition:.35s ease;
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 25px 60px rgba(0,0,0,.6);
+}
+
+.glow{
+  box-shadow:0 0 40px rgba(124,124,255,.35);
+}
+
+.label{
+  font-size:.7rem;
+  letter-spacing:.2em;
+  color:#9ca3af;
+}
+
+.value{
+  font-size:1.6rem;
+  font-weight:600;
+}
+
+.section-title{
+  font-size:1.1rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#c7d2fe;
+  margin-bottom:1rem;
+}
+
+.input{
+  flex:1;
+  padding:1rem 1.2rem;
+  border-radius:1rem;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.2);
+  color:#e5e7eb;
+  outline:none;
+}
+
+.btn{
+  padding:1rem 1.6rem;
+  border-radius:1rem;
+  font-weight:500;
+  transition:.25s ease;
+}
+.btn-green{ background:linear-gradient(135deg,#2bff88,#16c172); }
+.btn-red{ background:linear-gradient(135deg,#ff4d6d,#eca50e); }
+.btn:hover{ transform:scale(1.06); }
+</style>
+
+<!-- LOGIC -->
+<script>
+function updateSlots(){
+  alert("Slot count updated (demo)");
+}
+function resetSystem(){
+  if(confirm("Reset all slots?")) {
+    alert("System reset (demo)");
+  }
+}
+logoutBtn.onclick = () => {
+  window.location.href = "login.html";
+};
+</script>
+
+</body>
+</html>
