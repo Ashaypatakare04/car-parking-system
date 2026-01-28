@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>DriveFlow • Admin Panel</title>
+<title>DriveFlow • Admin Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -18,6 +18,7 @@ tailwind.config = {
         primary: "#7c7cff",
         green: "#2bff88",
         red: "#ff4d6d",
+        yellow: "#facc15",
         text: "#e5e7eb",
         muted: "#9ca3af"
       }
@@ -40,12 +41,8 @@ tailwind.config = {
 <!-- HEADER -->
 <header class="flex items-center justify-between mb-14">
   <div>
-    <h1 class="text-2xl font-semibold tracking-wide">
-      🛠 Admin Panel
-    </h1>
-    <p class="text-muted text-sm">
-      System management & controls
-    </p>
+    <h1 class="text-2xl font-semibold tracking-wide">🛠 DriveFlow Admin</h1>
+    <p class="text-muted text-sm">System control & monitoring</p>
   </div>
 
   <button id="logoutBtn"
@@ -54,12 +51,12 @@ tailwind.config = {
   </button>
 </header>
 
-<!-- SYSTEM STATS -->
-<section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
+<!-- OVERVIEW -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
 
   <div class="card glow">
     <p class="label">TOTAL SLOTS</p>
-    <h2 class="value">10</h2>
+    <h2 id="totalSlots" class="value">10</h2>
   </div>
 
   <div class="card">
@@ -69,29 +66,31 @@ tailwind.config = {
 
   <div class="card">
     <p class="label">OCCUPANCY</p>
-    <h2 class="value text-green">60%</h2>
+    <h2 id="occupancy" class="value text-green">0%</h2>
   </div>
 
   <div class="card">
-    <p class="label">SYSTEM STATUS</p>
-    <h2 class="value text-green">LIVE</h2>
+    <p class="label">SYSTEM MODE</p>
+    <h2 id="systemMode" class="value text-green">LIVE</h2>
   </div>
 
 </section>
 
 <!-- SLOT MANAGEMENT -->
 <section class="card mb-16">
-  <h3 class="section-title">Slot Management</h3>
+  <h3 class="section-title">Parking Configuration</h3>
 
   <div class="flex flex-col md:flex-row gap-4">
-    <input id="slotCount"
-      type="number"
-      placeholder="Total slots"
-      class="input"
-    />
+    <input id="slotInput" type="number" min="1"
+      placeholder="Set total slots"
+      class="input" />
 
     <button class="btn btn-green" onclick="updateSlots()">
-      Update Slots
+      Update Capacity
+    </button>
+
+    <button class="btn btn-yellow" onclick="toggleMaintenance()">
+      Toggle Maintenance
     </button>
 
     <button class="btn btn-red" onclick="resetSystem()">
@@ -100,28 +99,31 @@ tailwind.config = {
   </div>
 </section>
 
+<!-- ACTIVITY LOG -->
+<section class="mb-16">
+  <h3 class="section-title mb-4">Admin Activity</h3>
+
+  <div id="activityLog" class="space-y-3">
+    <!-- logs -->
+  </div>
+</section>
+
 <!-- USERS -->
 <section>
-  <h3 class="section-title mb-6">Recent Users</h3>
+  <h3 class="section-title mb-6">Registered Users</h3>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
     <div class="card">
       <p class="label">USER</p>
-      <h4 class="value text-base">user1@gmail.com</h4>
-      <p class="text-muted text-sm mt-1">Role: User</p>
+      <p class="value text-base">admin@driveflow.io</p>
+      <p class="text-muted text-sm">Role: Admin</p>
     </div>
 
     <div class="card">
       <p class="label">USER</p>
-      <h4 class="value text-base">admin@driveflow.io</h4>
-      <p class="text-muted text-sm mt-1">Role: Admin</p>
-    </div>
-
-    <div class="card">
-      <p class="label">USER</p>
-      <h4 class="value text-base">demo@parking.com</h4>
-      <p class="text-muted text-sm mt-1">Role: User</p>
+      <p class="value text-base">user1@gmail.com</p>
+      <p class="text-muted text-sm">Role: User</p>
     </div>
 
   </div>
@@ -143,30 +145,23 @@ tailwind.config = {
   transform:translateY(-6px);
   box-shadow:0 25px 60px rgba(0,0,0,.6);
 }
-
-.glow{
-  box-shadow:0 0 40px rgba(124,124,255,.35);
-}
+.glow{ box-shadow:0 0 40px rgba(124,124,255,.35); }
 
 .label{
   font-size:.7rem;
   letter-spacing:.2em;
   color:#9ca3af;
 }
-
 .value{
   font-size:1.6rem;
   font-weight:600;
 }
-
 .section-title{
-  font-size:1.1rem;
-  letter-spacing:.12em;
+  font-size:1.05rem;
+  letter-spacing:.14em;
   text-transform:uppercase;
   color:#c7d2fe;
-  margin-bottom:1rem;
 }
-
 .input{
   flex:1;
   padding:1rem 1.2rem;
@@ -174,9 +169,7 @@ tailwind.config = {
   background:rgba(255,255,255,0.08);
   border:1px solid rgba(255,255,255,0.2);
   color:#e5e7eb;
-  outline:none;
 }
-
 .btn{
   padding:1rem 1.6rem;
   border-radius:1rem;
@@ -185,22 +178,62 @@ tailwind.config = {
 }
 .btn-green{ background:linear-gradient(135deg,#2bff88,#16c172); }
 .btn-red{ background:linear-gradient(135deg,#ff4d6d,#eca50e); }
+.btn-yellow{ background:linear-gradient(135deg,#facc15,#eab308); }
 .btn:hover{ transform:scale(1.06); }
 </style>
 
 <!-- LOGIC -->
 <script>
+/* ===== ADMIN STATE ===== */
+let TOTAL_SLOTS = 10;
+let maintenance = false;
+
+/* ===== ELEMENTS ===== */
+const totalSlotsEl = document.getElementById("totalSlots");
+const occupancyEl = document.getElementById("occupancy");
+const modeEl = document.getElementById("systemMode");
+const logEl = document.getElementById("activityLog");
+
+/* ===== HELPERS ===== */
+function log(msg){
+  const div = document.createElement("div");
+  div.className = "card text-sm";
+  div.innerText = msg;
+  logEl.prepend(div);
+}
+
+function updateUI(){
+  totalSlotsEl.innerText = TOTAL_SLOTS;
+  occupancyEl.innerText = Math.floor(Math.random()*100) + "%";
+  modeEl.innerText = maintenance ? "MAINTENANCE" : "LIVE";
+  modeEl.className = "value " + (maintenance ? "text-yellow" : "text-green");
+}
+
+/* ===== ACTIONS ===== */
 function updateSlots(){
-  alert("Slot count updated (demo)");
+  const val = Number(slotInput.value);
+  if(!val || val < 1) return alert("Invalid slot count");
+  TOTAL_SLOTS = val;
+  log(`Capacity updated to ${val} slots`);
+  updateUI();
 }
+
+function toggleMaintenance(){
+  maintenance = !maintenance;
+  log(`System mode changed to ${maintenance ? "Maintenance" : "Live"}`);
+  updateUI();
+}
+
 function resetSystem(){
-  if(confirm("Reset all slots?")) {
-    alert("System reset (demo)");
-  }
+  if(!confirm("Reset entire system?")) return;
+  log("System reset performed");
 }
-logoutBtn.onclick = () => {
-  window.location.href = "login.html";
-};
+
+/* ===== INIT ===== */
+updateUI();
+
+/* ===== LOGOUT ===== */
+logoutBtn.onclick = () => location.href = "login.html";
 </script>
 
 </body>
