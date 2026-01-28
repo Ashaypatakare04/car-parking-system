@@ -21,8 +21,6 @@ tailwind.config = {
         stroke: "rgba(255,255,255,0.12)",
         primary: "#7c7cff",
         green: "#2bff88",
-        red: "#ff4d6d",
-        yellow: "#facc15",
         text: "#e5e7eb",
         muted: "#9ca3af"
       }
@@ -43,72 +41,68 @@ tailwind.config = {
 <div class="max-w-7xl mx-auto px-6 py-8">
 
 <!-- HEADER -->
-<header class="flex items-center justify-between mb-14">
+<header class="flex items-center justify-between mb-12">
   <div>
     <h1 class="text-2xl font-semibold tracking-wide">📊 Analytics</h1>
-    <p class="text-muted text-sm">
-      Parking usage & performance insights
-    </p>
+    <p class="text-muted text-sm">Usage & performance insights</p>
   </div>
 
-  <button onclick="location.href='admin.html'"
-    class="px-4 py-2 rounded-full border border-primary/40 text-primary text-xs tracking-widest hover:bg-primary/10">
-    BACK TO ADMIN
-  </button>
+  <div class="flex gap-3">
+    <button onclick="exportCSV()"
+      class="px-4 py-2 rounded-full border border-primary/40 text-primary text-xs tracking-widest hover:bg-primary/10">
+      EXPORT CSV
+    </button>
+
+    <button onclick="location.href='admin.html'"
+      class="px-4 py-2 rounded-full border border-primary/40 text-primary text-xs tracking-widest hover:bg-primary/10">
+      BACK
+    </button>
+  </div>
 </header>
 
-<!-- KPIs -->
-<section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+<!-- FILTERS -->
+<section class="flex gap-3 mb-10">
+  <button onclick="setRange('7d')" class="filter active">7 DAYS</button>
+  <button onclick="setRange('30d')" class="filter">30 DAYS</button>
+  <button onclick="setRange('all')" class="filter">ALL TIME</button>
+</section>
 
+<!-- KPIs -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
   <div class="card glow">
     <p class="label">AVG OCCUPANCY</p>
-    <h2 class="value">68%</h2>
+    <h2 id="avgOcc" class="value">–</h2>
   </div>
 
   <div class="card">
     <p class="label">PEAK HOUR</p>
-    <h2 class="value">6–8 PM</h2>
+    <h2 id="peakHour" class="value">–</h2>
   </div>
 
   <div class="card">
     <p class="label">DAILY USERS</p>
-    <h2 class="value">42</h2>
+    <h2 id="dailyUsers" class="value">–</h2>
   </div>
 
   <div class="card">
-    <p class="label">EST. DAILY REVENUE</p>
-    <h2 class="value text-green">₹1,680</h2>
+    <p class="label">EST. REVENUE</p>
+    <h2 id="revenue" class="value text-green">–</h2>
   </div>
-
 </section>
 
 <!-- CHARTS -->
-<section class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-14">
 
-  <!-- LINE -->
   <div class="card">
     <p class="section-title mb-4">Usage Over Time</p>
     <canvas id="usageChart" height="140"></canvas>
   </div>
 
-  <!-- BAR -->
   <div class="card">
-    <p class="section-title mb-4">Slot Occupancy Distribution</p>
+    <p class="section-title mb-4">Slot Distribution</p>
     <canvas id="slotChart" height="140"></canvas>
   </div>
 
-</section>
-
-<!-- INSIGHTS -->
-<section class="card">
-  <h3 class="section-title mb-4">Key Insights</h3>
-
-  <ul class="space-y-3 text-sm text-muted">
-    <li>• Parking demand peaks between <b class="text-text">6–8 PM</b></li>
-    <li>• Average occupancy remains above <b class="text-text">60%</b></li>
-    <li>• Slot group B shows higher usage than others</li>
-    <li>• Revenue increases significantly during evening hours</li>
-  </ul>
 </section>
 
 </div>
@@ -122,9 +116,8 @@ tailwind.config = {
   border-radius:1.4rem;
   padding:1.6rem;
 }
-.glow{
-  box-shadow:0 0 40px rgba(124,124,255,.35);
-}
+.glow{ box-shadow:0 0 40px rgba(124,124,255,.35); }
+
 .label{
   font-size:.7rem;
   letter-spacing:.2em;
@@ -140,51 +133,107 @@ tailwind.config = {
   text-transform:uppercase;
   color:#c7d2fe;
 }
+.filter{
+  padding:.6rem 1.2rem;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.2);
+  font-size:.7rem;
+  letter-spacing:.18em;
+  transition:.2s;
+}
+.filter.active,
+.filter:hover{
+  background:#7c7cff;
+  color:black;
+}
 </style>
 
-<!-- CHART LOGIC -->
+<!-- LOGIC -->
 <script>
-// Usage Line Chart
-new Chart(document.getElementById("usageChart"), {
-  type: "line",
-  data: {
-    labels: ["8 AM","10 AM","12 PM","2 PM","4 PM","6 PM","8 PM","10 PM"],
-    datasets: [{
-      label: "Occupied Slots",
-      data: [12,18,22,25,28,35,32,20],
-      borderColor: "#7c7cff",
-      backgroundColor: "rgba(124,124,255,0.2)",
-      tension: 0.4,
-      fill: true
-    }]
+/* ===== DATA SETS (SIMULATED) ===== */
+const DATA = {
+  "7d": {
+    labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+    usage:[22,25,28,30,35,38,32],
+    avg:"68%",
+    peak:"6–8 PM",
+    users:42,
+    revenue:"₹1,680"
   },
-  options: {
-    plugins:{ legend:{ display:false }},
-    scales:{
-      x:{ ticks:{ color:"#9ca3af" }},
-      y:{ ticks:{ color:"#9ca3af" }}
-    }
+  "30d": {
+    labels:["W1","W2","W3","W4"],
+    usage:[60,72,80,75],
+    avg:"64%",
+    peak:"5–7 PM",
+    users:38,
+    revenue:"₹7,400"
+  },
+  "all": {
+    labels:["Jan","Feb","Mar","Apr","May"],
+    usage:[55,62,70,78,74],
+    avg:"66%",
+    peak:"6–8 PM",
+    users:35,
+    revenue:"₹32,000"
   }
+};
+
+let currentRange = "7d";
+
+/* ===== CHARTS ===== */
+const usageChart = new Chart(document.getElementById("usageChart"), {
+  type:"line",
+  data:{ labels:[], datasets:[{
+    data:[],
+    borderColor:"#7c7cff",
+    backgroundColor:"rgba(124,124,255,.2)",
+    fill:true,
+    tension:.4
+  }]},
+  options:{ plugins:{legend:{display:false}} }
 });
 
-// Slot Bar Chart
-new Chart(document.getElementById("slotChart"), {
-  type: "bar",
-  data: {
-    labels: ["A","B","C","D","E"],
-    datasets: [{
-      data: [75,90,60,50,65],
-      backgroundColor: "#2bff88"
-    }]
+const slotChart = new Chart(document.getElementById("slotChart"), {
+  type:"bar",
+  data:{
+    labels:["A","B","C","D","E"],
+    datasets:[{ data:[75,90,60,50,65], backgroundColor:"#2bff88" }]
   },
-  options: {
-    plugins:{ legend:{ display:false }},
-    scales:{
-      x:{ ticks:{ color:"#9ca3af" }},
-      y:{ ticks:{ color:"#9ca3af" }}
-    }
-  }
+  options:{ plugins:{legend:{display:false}} }
 });
+
+/* ===== FUNCTIONS ===== */
+function setRange(range){
+  currentRange = range;
+
+  document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
+
+  const d = DATA[range];
+  usageChart.data.labels = d.labels;
+  usageChart.data.datasets[0].data = d.usage;
+  usageChart.update();
+
+  avgOcc.innerText = d.avg;
+  peakHour.innerText = d.peak;
+  dailyUsers.innerText = d.users;
+  revenue.innerText = d.revenue;
+}
+
+function exportCSV(){
+  const d = DATA[currentRange];
+  let csv = "Label,Usage\n";
+  d.labels.forEach((l,i)=>csv += `${l},${d.usage[i]}\n`);
+
+  const blob = new Blob([csv], { type:"text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `driveflow-analytics-${currentRange}.csv`;
+  a.click();
+}
+
+/* INIT */
+setRange("7d");
 </script>
 
 </body>
