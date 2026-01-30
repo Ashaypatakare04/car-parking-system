@@ -1,9 +1,17 @@
-firebase.initializeApp({
-  apiKey: "AIzaSyBEyRxlEO4JKzeRBqLTBqUQS-abtp58eaw",
-  authDomain: "pulsevoice-1ef60.firebaseapp.com"
-});
+const firebaseConfig = {
+  apiKey: "AIzaSyBnkyA0pzhjubkvrmgr52UAULvP7zGh2T4",
+  authDomain: "driveon-da2f6.firebaseapp.com",
+  projectId: "driveon-da2f6",
+  storageBucket: "driveon-da2f6.firebasestorage.app",
+  messagingSenderId: "394286318024",
+  appId: "1:394286318024:web:ac5a607be3309b44ea40fd",
+  measurementId: "G-0CCV8DTEEK"
+};
+
+firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // Toggle
 showSignup.onclick = () => {
