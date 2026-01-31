@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>DriveFlow — Smart Parking</title>
+<title>SlotSync — Smart Parking</title>
 
 <!-- ================= GOOGLE FONTS ================= -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -113,7 +113,7 @@ body {
       <h1 class="brand text-5xl font-bold mb-2
         bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400
         bg-clip-text text-transparent">
-        DriveFlow
+        SlotSync
       </h1>
 
       <!-- ACCENT -->
@@ -181,6 +181,12 @@ body {
             class="input w-full px-4 py-3 rounded-lg">
           <input id="loginPassword" type="password" placeholder="Password"
             class="input w-full px-4 py-3 rounded-lg">
+          <!-- Role Select UI (no logic change) -->
+          <select id="loginRole"
+           class="input w-full px-4 py-3 rounded-lg">
+          <option value="user">Login as User</option>
+          <option value="admin">Login as Admin</option>
+          </select>
 
           <div class="text-right text-sm">
             <a href="#" id="forgotPassword" class="text-indigo-300 hover:underline">
@@ -210,7 +216,11 @@ body {
             class="input w-full px-4 py-3 rounded-lg">
           <input id="signupConfirm" type="password" placeholder="Confirm Password"
             class="input w-full px-4 py-3 rounded-lg">
-
+          <select id="signupRole"
+            class="input w-full px-4 py-3 rounded-lg">
+            <option value="user">Create User Account</option>
+            <option value="admin">Create Admin Account</option>
+            </select>
           <button class="primary-btn w-full py-3 rounded-xl">
             Create Account
           </button>
