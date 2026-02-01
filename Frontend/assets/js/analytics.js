@@ -76,7 +76,7 @@ function exportCSV(){
   const blob = new Blob([csv], { type:"text/csv" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `driveflow-analytics-${currentRange}.csv`;
+  a.download = `SlotSync-analytics-${currentRange}.csv`;
   a.click();
 }
 
