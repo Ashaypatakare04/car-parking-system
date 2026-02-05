@@ -4,11 +4,32 @@ firebase.initializeApp({
   authDomain: "pulsevoice-1ef60.firebaseapp.com"
 });
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // ================= AUTH PROTECTION =================
-//auth.onAuthStateChanged(user => {
-//  if (!user) location.href = "home.html";
-//});
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    location.href = "login.html";
+    return;
+  }
+
+  db.collection("users").doc(user.uid).get().then(doc => {
+    if (!doc.exists) {
+      alert("No role found!");
+      auth.signOut();
+      return;
+    }
+
+    const role = doc.data().role;
+
+    // 🚫 Block if not admin
+    if (role !== "admin") {
+      alert("Access Denied! Admins only.");
+      auth.signOut();
+      location.href = "login.html";
+    }
+  });
+});
 
 // ================= LOGOUT =================
 logoutBtn.onclick = () => auth.signOut();
