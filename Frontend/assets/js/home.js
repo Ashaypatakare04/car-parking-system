@@ -30,7 +30,6 @@ auth.onAuthStateChanged(user => {
     }
   });
 });
-
 // ================= LOGOUT =================
 logoutBtn.onclick = () => auth.signOut();
 
