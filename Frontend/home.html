@@ -46,14 +46,18 @@ tailwind.config = {
 <div class="max-w-7xl mx-auto px-6 py-8">
 
 <!-- HEADER -->
-<header class="flex items-center justify-between mb-12">
+<header class="flex items-center justify-between mb-14">
   <div>
-    <h1 class="text-2xl font-semibold tracking-wide">🚗 SlotSync</h1>
-    <p class="text-muted text-sm">Smart parking management dashboard</p>
+    <h1 class="text-3xl font-bold tracking-wide">
+      🚗 SlotSync Dashboard
+    </h1>
+    <p class="text-muted text-sm mt-1">
+      Real-time smart parking monitoring system
+    </p>
   </div>
 
   <button id="logoutBtn"
-    class="px-4 py-2 rounded-full border border-neon/40 text-neon text-xs tracking-widest hover:bg-neon/10">
+    class="px-5 py-2 rounded-full border border-neon/40 text-neon text-xs tracking-widest hover:bg-neon/10 hover:scale-105 transition">
     LOGOUT
   </button>
 </header>
@@ -114,55 +118,168 @@ tailwind.config = {
 
 <!--STYLES-->
 <style>
-.card{
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:1.4rem;
-  padding:1.6rem;
-  transition:.35s ease;
-}
-.card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 25px 60px rgba(0,0,0,.6);
-}
-.glow{ box-shadow:0 0 40px rgba(124,124,255,.35); }
-
-.label{
-  font-size:.7rem;
-  letter-spacing:.2em;
-  color:#9ca3af;
-}
-.value{ font-size:1.9rem; font-weight:600; }
-
-.section-title{
-  font-size:1.1rem;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:#c7d2fe;
-  margin-bottom:1rem;
+/* Smooth Font + Global */
+body {
+  font-family: "Inter", system-ui, sans-serif;
 }
 
-.input{
-  flex:1;
-  padding:1rem 1.2rem;
-  border-radius:1rem;
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.2);
-  color:#e5e7eb;
-  outline:none;
+/* Card Upgrade */
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1.8rem;
+  padding: 1.8rem;
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
 }
-.input::placeholder{color:#9ca3af;}
 
-.btn{
-  padding:1rem 1.6rem;
-  border-radius:1rem;
-  font-weight:500;
-  transition:.25s ease;
+/* Neon border glow */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(124, 124, 255, 0.55),
+    rgba(255, 77, 109, 0.35)
+  );
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: 0.35s ease;
 }
-.btn-green{ background:linear-gradient(135deg,#2bff88,#16c172); }
-.btn-red{ background:linear-gradient(135deg,#ff4d6d,#eca50e); }
-.btn:hover{ transform:scale(1.06); }
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.75);
+}
+
+/* Stat Labels */
+.label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-bottom: 0.4rem;
+}
+
+/* Values */
+.value {
+  font-size: 2.3rem;
+  font-weight: 700;
+}
+
+/* Titles */
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c7d2fe;
+}
+
+/* Inputs */
+.input {
+  flex: 1;
+  padding: 1rem 1.3rem;
+  border-radius: 1.3rem;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #f9fafb;
+  font-size: 0.95rem;
+  transition: 0.25s ease;
+}
+
+.input:focus {
+  border-color: rgba(124, 124, 255, 0.8);
+  box-shadow: 0 0 25px rgba(124, 124, 255, 0.35);
+}
+
+.input::placeholder {
+  color: rgba(156, 163, 175, 0.7);
+}
+
+/* Buttons */
+.btn {
+  padding: 1rem 1.7rem;
+  border-radius: 1.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Premium Button Colors */
+.btn-green {
+  background: linear-gradient(135deg, #2bff88, #16c172);
+  box-shadow: 0 0 25px rgba(43, 255, 136, 0.25);
+}
+
+.btn-red {
+  background: linear-gradient(135deg, #ff4d6d, #ffae00);
+  box-shadow: 0 0 25px rgba(255, 77, 109, 0.25);
+}
+
+.btn:hover {
+  transform: scale(1.08);
+  filter: brightness(1.1);
+}
+
+/* Slot Card Special */
+.slot-card {
+  text-align: center;
+  padding: 1.4rem;
+  border-radius: 1.5rem;
+  transition: 0.3s ease;
+}
+
+.slot-card.free {
+  border: 1px solid rgba(43, 255, 136, 0.35);
+  box-shadow: 0 0 18px rgba(43, 255, 136, 0.15);
+}
+
+.slot-card.occupied {
+  border: 1px solid rgba(255, 77, 109, 0.35);
+  box-shadow: 0 0 18px rgba(255, 77, 109, 0.15);
+}
+
+/* Slot Hover */
+.slot-card:hover {
+  transform: translateY(-6px);
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 0.8rem;
+}
+
+.badge.free {
+  background: rgba(43, 255, 136, 0.15);
+  color: #2bff88;
+}
+
+.badge.occupied {
+  background: rgba(255, 77, 109, 0.15);
+  color: #ff4d6d;
+}
 </style>
 
 <!-- LOGIC -->

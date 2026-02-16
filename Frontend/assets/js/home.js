@@ -1,10 +1,21 @@
 // ================= FIREBASE INIT =================
 firebase.initializeApp({
-  apiKey: "AIzaSyBEyRxlEO4JKzeRBqLTBqUQS-abtp58eaw",
-  authDomain: "pulsevoice-1ef60.firebaseapp.com"
+  apiKey: "AIzaSyBnkyA0pzhjubkvrmgr52UAULvP7zGh2T4",
+  authDomain: "driveon-da2f6.firebaseapp.com",
+  projectId: "driveon-da2f6" // ✅ REQUIRED
 });
+
 const auth = firebase.auth();
 const db = firebase.firestore();
+
+// ================= DOM ELEMENTS =================
+const logoutBtn = document.getElementById("logoutBtn");
+const carNumber = document.getElementById("carNumber");
+const alertBox = document.getElementById("alertBox");
+const slotsEl = document.getElementById("slots");
+
+const availableCount = document.getElementById("availableCount");
+const occupiedCount = document.getElementById("occupiedCount");
 
 // ================= AUTH PROTECTION =================
 auth.onAuthStateChanged(user => {
@@ -13,94 +24,128 @@ auth.onAuthStateChanged(user => {
     return;
   }
 
-  db.collection("users").doc(user.uid).get().then(doc => {
-    if (!doc.exists) {
-      alert("No role found!");
-      auth.signOut();
-      return;
-    }
+  db.collection("users")
+    .doc(user.uid)
+    .get()
+    .then(doc => {
+      if (!doc.exists) {
+        alert("No role found!");
+        auth.signOut();
+        return;
+      }
 
-    const role = doc.data().role;
+      const role = doc.data().role;
 
-    // 🚫 Block if not admin
-    if (role !== "admin") {
-      alert("Access Denied! Admins only.");
-      auth.signOut();
-      location.href = "login.html";
-    }
-  });
+      if (role !== "admin") {
+        alert("Access Denied! Admins only.");
+        auth.signOut();
+        location.href = "login.html";
+      }
+    });
 });
+
 // ================= LOGOUT =================
 logoutBtn.onclick = () => auth.signOut();
 
 // ================= APP STATE =================
 const TOTAL_SLOTS = 10;
+
 let slots = Array.from({ length: TOTAL_SLOTS }, (_, i) => ({
   id: i + 1,
   status: "available",
-  car: null
+  car: ""
 }));
 
-// ================= UI UPDATE =================
+// ================= ALERT =================
+function showAlert(msg, type = "success") {
+  alertBox.className = `
+    mb-10 px-6 py-4 rounded-xl border text-sm font-semibold
+    ${type === "error"
+      ? "border-red-500/40 text-red-400"
+      : "border-green-500/40 text-green-400"}
+  `;
+
+  alertBox.innerText = msg;
+  alertBox.classList.remove("hidden");
+
+  setTimeout(() => alertBox.classList.add("hidden"), 3000);
+}
+
+// ================= RENDER UI =================
 function render() {
-  const available = slots.filter(s => s.status === "available").length;
-  const occupied = TOTAL_SLOTS - available;
+  slotsEl.innerHTML = "";
+
+  slots.forEach((slot, index) => {
+    slotsEl.innerHTML += `
+      <div class="card slot-card ${
+        slot.status === "occupied" ? "occupied" : "free"
+      }">
+
+        <p class="label">Slot ${slot.id}</p>
+
+        <h2 class="value ${
+          slot.status === "occupied" ? "text-red" : "text-green"
+        }">
+          ${slot.status === "occupied" ? "🚘 Busy" : "🅿 Free"}
+        </h2>
+
+        <p class="text-sm mt-2 text-muted">
+          ${slot.status === "occupied" ? slot.car : "No Vehicle"}
+        </p>
+
+        <span class="badge ${
+          slot.status === "occupied" ? "occupied" : "free"
+        }">
+          ${slot.status === "occupied" ? "Occupied" : "Available"}
+        </span>
+      </div>
+    `;
+  });
+
+  // Update Counts
+  const occupied = slots.filter(s => s.status === "occupied").length;
+  const available = TOTAL_SLOTS - occupied;
 
   availableCount.innerText = available;
   occupiedCount.innerText = occupied;
-  totalCount.innerText = TOTAL_SLOTS;
-
-  slotsEl.innerHTML = "";
-  slots.forEach(slot => {
-    const div = document.createElement("div");
-    div.className = `card text-center ${slot.status === "occupied" ? "border-red-500/40" : ""}`;
-    div.innerHTML = `
-      <p class="label">SLOT ${slot.id}</p>
-      <h3 class="value">${slot.status === "available" ? "FREE" : "BUSY"}</h3>
-      <p class="text-xs text-muted mt-1">${slot.car || ""}</p>
-    `;
-    slotsEl.appendChild(div);
-  });
-}
-
-// ================= ALERT =================
-function showAlert(msg, type="info") {
-  alertBox.className = `mb-10 px-6 py-4 rounded-xl border 
-    ${type === "error" ? "border-red-500/40 text-red-400" : "border-green-500/40 text-green-400"}`;
-  alertBox.innerText = msg;
-  alertBox.classList.remove("hidden");
-  setTimeout(() => alertBox.classList.add("hidden"), 3000);
 }
 
 // ================= ACTIONS =================
 function parkCar() {
-  const car = carNumber.value.trim();
+  const car = carNumber.value.trim().toUpperCase();
+
   if (!car) return showAlert("Enter vehicle number", "error");
 
   const slot = slots.find(s => s.status === "available");
-  if (!slot) return showAlert("Parking full", "error");
+
+  if (!slot) return showAlert("Parking Full!", "error");
 
   slot.status = "occupied";
   slot.car = car;
+
   carNumber.value = "";
   render();
-  showAlert(`Vehicle ${car} parked`);
+
+  showAlert(`Vehicle ${car} parked successfully`);
 }
 
 function removeCar() {
-  const car = carNumber.value.trim();
+  const car = carNumber.value.trim().toUpperCase();
+
   if (!car) return showAlert("Enter vehicle number", "error");
 
   const slot = slots.find(s => s.car === car);
-  if (!slot) return showAlert("Vehicle not found", "error");
+
+  if (!slot) return showAlert("Vehicle not found!", "error");
 
   slot.status = "available";
-  slot.car = null;
+  slot.car = "";
+
   carNumber.value = "";
   render();
-  showAlert(`Vehicle ${car} removed`);
+
+  showAlert(`Vehicle ${car} removed successfully`);
 }
 
 // ================= INIT =================
-const slotsEl = document.getElementById("slots");
 render();
