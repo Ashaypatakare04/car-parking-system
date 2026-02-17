@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SlotSync • Pro Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>SlotSync • Pro Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="icon" type="image/png" href="assets/img/SlotSync_2.png">
+  <link rel="icon" type="image/png" href="assets/img/SlotSync_2.png">
 
-<!-- Tailwind CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        bg: "#06070c",
-        panel: "rgba(255,255,255,0.06)",
-        stroke: "rgba(255,255,255,0.12)",
-        neon: "#7c7cff",
-        green: "#2bff88",
-        red: "#ff4d6d",
-        text: "#e5e7eb",
-        muted: "#9ca3af"
+  <!-- Tailwind Custom Theme -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: "#06070c",
+            panel: "rgba(255,255,255,0.06)",
+            stroke: "rgba(255,255,255,0.12)",
+            neon: "#7c7cff",
+            green: "#2bff88",
+            red: "#ff4d6d",
+            text: "#e5e7eb",
+            muted: "#9ca3af"
+          }
+        }
       }
     }
-  }
-}
-</script>
+  </script>
 </head>
 
-<body class="bg-bg text-text overflow-x-hidden">
+<body class="bg-bg text-text overflow-x-hidden animate-fadeIn">
 
 <!-- BACKGROUND GLOW -->
 <div class="fixed inset-0 -z-10">
@@ -43,105 +44,138 @@ tailwind.config = {
   <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-fuchsia-600/20 blur-[180px]"></div>
 </div>
 
-<div class="max-w-7xl mx-auto px-6 py-8">
+<!-- MAIN CONTAINER -->
+<div class="max-w-7xl mx-auto px-6 py-10">
 
-<!-- HEADER -->
-<header class="flex items-center justify-between mb-14">
-  <div>
-    <h1 class="text-3xl font-bold tracking-wide">
-      🚗 SlotSync Dashboard
-    </h1>
-    <p class="text-muted text-sm mt-1">
-      Real-time smart parking monitoring system
-    </p>
-  </div>
+  <!-- HEADER -->
+  <header class="flex items-center justify-between mb-14">
+    <div>
+      <h1 class="text-3xl font-bold tracking-wide">
+        🚗 SlotSync Dashboard
+      </h1>
+      <p class="text-muted text-sm mt-1">
+        Real-time smart parking monitoring system
+      </p>
+    </div>
 
-  <button id="logoutBtn"
-    class="px-5 py-2 rounded-full border border-neon/40 text-neon text-xs tracking-widest hover:bg-neon/10 hover:scale-105 transition">
-    LOGOUT
-  </button>
-</header>
-
-<!-- STATS -->
-<section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
-  <div class="card glow">
-    <p class="label">TOTAL SLOTS</p>
-    <h2 id="totalCount" class="value">10</h2>
-  </div>
-
-  <div class="card">
-    <p class="label">AVAILABLE</p>
-    <h2 id="availableCount" class="value text-green">0</h2>
-  </div>
-
-  <div class="card">
-    <p class="label">OCCUPIED</p>
-    <h2 id="occupiedCount" class="value text-red">0</h2>
-  </div>
-
-  <div class="card">
-    <p class="label">RATE</p>
-    <h2 class="value">₹20/hr</h2>
-  </div>
-</section>
-
-<!-- ALERT -->
-<div id="alertBox" class="hidden mb-10"></div>
-
-<!-- CONTROL -->
-<section class="card mb-16">
-  <h3 class="section-title">Vehicle Control</h3>
-
-  <div class="flex flex-col md:flex-row gap-4">
-    <input id="carNumber"
-      placeholder="Vehicle Number (MH12AB1234)"
-      class="input"
-    />
-
-    <button onclick="parkCar()" class="btn btn-green">
-      Park Vehicle
+    <button id="logoutBtn"
+      class="px-5 py-2 rounded-full border border-neon/40 text-neon text-xs tracking-widest hover:bg-neon/10 hover:scale-105 transition">
+      LOGOUT
     </button>
+  </header>
 
-    <button onclick="removeCar()" class="btn btn-red">
-      Remove Vehicle
-    </button>
-  </div>
-</section>
+  <!-- STATS -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
+    <div class="card glow">
+      <p class="label">TOTAL SLOTS</p>
+      <h2 id="totalCount" class="value">0</h2>
+    </div>
 
-<!-- SLOTS -->
-<section>
-  <h3 class="section-title mb-6">Parking Grid</h3>
-  <div id="slots" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"></div>
-</section>
+    <div class="card">
+      <p class="label">AVAILABLE</p>
+      <h2 id="availableCount" class="value text-green">0</h2>
+    </div>
 
-</div>
+    <div class="card">
+      <p class="label">OCCUPIED</p>
+      <h2 id="occupiedCount" class="value text-red">0</h2>
+    </div>
 
-<section class="mt-16">
-  <h3 class="section-title mb-6">Parking History</h3>
+    <div class="card">
+      <p class="label">RATE</p>
+      <h2 class="value">₹20/hr</h2>
+    </div>
+  </section>
 
-  <div class="card overflow-x-auto">
-    <table class="w-full text-sm text-left">
-      <thead class="text-muted uppercase">
-        <tr>
-          <th class="py-3">Vehicle</th>
-          <th>Slot</th>
-          <th>Bill</th>
-          <th>Exit Time</th>
-        </tr>
-      </thead>
-      <tbody id="historyTable"></tbody>
-    </table>
-  </div>
-</section>
+  <!-- ALERT -->
+  <div id="alertBox" class="hidden mb-10"></div>
 
-<!--STYLES-->
+  <!-- VEHICLE + ADMIN CONTROL -->
+  <section class="card mb-16">
+    <h3 class="section-title">Vehicle Control</h3>
+
+    <!-- Vehicle Input -->
+    <div class="flex flex-col md:flex-row gap-4">
+      <input id="carNumber"
+        placeholder="Vehicle Number (MH12AB1234)"
+        class="input"
+      />
+
+      <button onclick="parkCar()" class="btn btn-green">
+        🚗 Park Vehicle
+      </button>
+
+      <button onclick="removeCar()" class="btn btn-red">
+        ❌ Remove Vehicle
+      </button>
+    </div>
+
+    <!-- Admin Slot Controls -->
+    <div class="flex flex-col md:flex-row gap-4 mt-6">
+      <button id="addSlotBtn" class="btn btn-green w-full">
+        ➕ Add Slot
+      </button>
+
+      <button id="removeSlotBtn" class="btn btn-red w-full">
+        ➖ Remove Last Slot
+      </button>
+    </div>
+  </section>
+
+  <!-- PARKING GRID -->
+  <section>
+    <h3 class="section-title mb-6">Parking Grid</h3>
+    <div id="slots"
+      class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+    </div>
+  </section>
+
+  <!-- PARKING HISTORY -->
+  <section class="mt-16">
+    <h3 class="section-title mb-6">Parking History</h3>
+
+    <div class="card overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead class="text-muted uppercase">
+          <tr>
+            <th class="py-3">Vehicle</th>
+            <th>Slot</th>
+            <th>Bill</th>
+            <th>Exit Time</th>
+          </tr>
+        </thead>
+
+        <!-- Placeholder -->
+        <tbody id="historyTable">
+          <tr>
+            <td colspan="4" class="py-6 text-center text-muted">
+              No parking history yet...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div> <!-- ✅ Container Ends -->
+
+<!-- STYLES -->
 <style>
-/* Smooth Font + Global */
+/* Fade Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease;
+}
+
+/* Smooth Font */
 body {
   font-family: "Inter", system-ui, sans-serif;
 }
 
-/* Card Upgrade */
+/* Card Styling */
 .card {
   background: rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(22px);
@@ -153,34 +187,16 @@ body {
   overflow: hidden;
 }
 
-/* Neon border glow */
-.card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(124, 124, 255, 0.55),
-    rgba(255, 77, 109, 0.35)
-  );
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  opacity: 0;
-  transition: 0.35s ease;
-}
-
-.card:hover::before {
-  opacity: 1;
-}
-
 .card:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-6px);
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.75);
 }
 
-/* Stat Labels */
+.glow {
+  box-shadow: 0 0 40px rgba(124, 124, 255, 0.35);
+}
+
+/* Labels */
 .label {
   font-size: 0.72rem;
   font-weight: 600;
@@ -190,13 +206,11 @@ body {
   margin-bottom: 0.4rem;
 }
 
-/* Values */
 .value {
   font-size: 2.3rem;
   font-weight: 700;
 }
 
-/* Titles */
 .section-title {
   font-size: 1.15rem;
   font-weight: 700;
@@ -205,7 +219,7 @@ body {
   color: #c7d2fe;
 }
 
-/* Inputs */
+/* Input */
 .input {
   flex: 1;
   padding: 1rem 1.3rem;
@@ -213,17 +227,12 @@ body {
   background: rgba(255, 255, 255, 0.09);
   border: 1px solid rgba(255, 255, 255, 0.22);
   color: #f9fafb;
-  font-size: 0.95rem;
-  transition: 0.25s ease;
 }
 
 .input:focus {
   border-color: rgba(124, 124, 255, 0.8);
   box-shadow: 0 0 25px rgba(124, 124, 255, 0.35);
-}
-
-.input::placeholder {
-  color: rgba(156, 163, 175, 0.7);
+  outline: none;
 }
 
 /* Buttons */
@@ -231,52 +240,29 @@ body {
   padding: 1rem 1.7rem;
   border-radius: 1.4rem;
   font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  transition: 0.3s ease;
 }
 
-/* Premium Button Colors */
 .btn-green {
   background: linear-gradient(135deg, #2bff88, #16c172);
-  box-shadow: 0 0 25px rgba(43, 255, 136, 0.25);
 }
 
 .btn-red {
   background: linear-gradient(135deg, #ff4d6d, #ffae00);
-  box-shadow: 0 0 25px rgba(255, 77, 109, 0.25);
 }
 
 .btn:hover {
-  transform: scale(1.08);
+  transform: scale(1.06);
   filter: brightness(1.1);
 }
 
-/* Slot Card Special */
-.slot-card {
-  text-align: center;
-  padding: 1.4rem;
-  border-radius: 1.5rem;
-  transition: 0.3s ease;
-}
-
+/* Slot Cards */
 .slot-card.free {
   border: 1px solid rgba(43, 255, 136, 0.35);
-  box-shadow: 0 0 18px rgba(43, 255, 136, 0.15);
 }
 
 .slot-card.occupied {
   border: 1px solid rgba(255, 77, 109, 0.35);
-  box-shadow: 0 0 18px rgba(255, 77, 109, 0.15);
-}
-
-/* Slot Hover */
-.slot-card:hover {
-  transform: translateY(-6px);
 }
 
 /* Badge */
@@ -289,18 +275,14 @@ body {
   margin-top: 0.8rem;
 }
 
-.badge.free {
-  background: rgba(43, 255, 136, 0.15);
-  color: #2bff88;
-}
-
-.badge.occupied {
-  background: rgba(255, 77, 109, 0.15);
-  color: #ff4d6d;
+/* Table Hover */
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 </style>
 
 <!-- LOGIC -->
 <script src="assets/js/home.js"></script>
+
 </body>
 </html>
