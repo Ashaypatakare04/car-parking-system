@@ -106,6 +106,27 @@ function render() {
   occupiedCount.innerText = occupied;
 }
 
+
+async function cleanupExtraSlots() {
+  const snap = await db.collection("slots").get();
+
+  const batch = db.batch();
+
+  snap.forEach(doc => {
+    const idNum = Number(doc.id.replace("slot", ""));
+
+    // Delete slots beyond TOTAL_SLOTS
+    if (idNum > TOTAL_SLOTS) {
+      batch.delete(doc.ref);
+    }
+  });
+
+  await batch.commit();
+  console.log("🧹 Extra slots cleaned up!");
+}
+
+
+
 // ================= REALTIME SLOT LISTENER =================
 function loadSlotsRealtime() {
   db.collection("slots").onSnapshot(snapshot => {
@@ -288,6 +309,7 @@ function loadHistory() {
 async function initSystem() {
   await loadConfig();
   await ensureSlotsExist();
+  await cleanupExtraSlots();
 
   loadSlotsRealtime();
   loadHistory();
