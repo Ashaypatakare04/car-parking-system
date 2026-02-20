@@ -1,4 +1,4 @@
-/* ===== DATA SETS (SIMULATED) ===== */
+/* ===== DATA (SIMULATED) ===== */
 const DATA = {
   "7d": {
     labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
@@ -28,6 +28,12 @@ const DATA = {
 
 let currentRange = "7d";
 
+/* ===== DOM REFERENCES ===== */
+const avgOcc = document.getElementById("avgOcc");
+const peakHour = document.getElementById("peakHour");
+const dailyUsers = document.getElementById("dailyUsers");
+const revenue = document.getElementById("revenue");
+
 /* ===== CHARTS ===== */
 const usageChart = new Chart(document.getElementById("usageChart"), {
   type:"line",
@@ -38,26 +44,41 @@ const usageChart = new Chart(document.getElementById("usageChart"), {
     fill:true,
     tension:.4
   }]},
-  options:{ plugins:{legend:{display:false}} }
+  options:{
+    responsive:true,
+    plugins:{ legend:{display:false} }
+  }
 });
 
 const slotChart = new Chart(document.getElementById("slotChart"), {
   type:"bar",
   data:{
     labels:["A","B","C","D","E"],
-    datasets:[{ data:[75,90,60,50,65], backgroundColor:"#2bff88" }]
+    datasets:[{
+      data:[75,90,60,50,65],
+      backgroundColor:"#2bff88"
+    }]
   },
-  options:{ plugins:{legend:{display:false}} }
+  options:{
+    responsive:true,
+    plugins:{ legend:{display:false} }
+  }
+});
+
+/* ===== FILTER HANDLING ===== */
+document.querySelectorAll(".filter").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    setRange(btn.dataset.range);
+  });
 });
 
 /* ===== FUNCTIONS ===== */
 function setRange(range){
   currentRange = range;
-
-  document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
-  event.target.classList.add("active");
-
   const d = DATA[range];
+
   usageChart.data.labels = d.labels;
   usageChart.data.datasets[0].data = d.usage;
   usageChart.update();
@@ -71,7 +92,9 @@ function setRange(range){
 function exportCSV(){
   const d = DATA[currentRange];
   let csv = "Label,Usage\n";
-  d.labels.forEach((l,i)=>csv += `${l},${d.usage[i]}\n`);
+  d.labels.forEach((l,i)=>{
+    csv += `${l},${d.usage[i]}\n`;
+  });
 
   const blob = new Blob([csv], { type:"text/csv" });
   const a = document.createElement("a");
