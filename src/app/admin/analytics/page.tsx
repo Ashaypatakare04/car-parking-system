@@ -9,7 +9,7 @@ import { BarChart3, Clock, TrendingUp, DollarSign } from "lucide-react"
 
 export default function AdminAnalytics() {
   const { user } = useAppStore()
-  
+
   const [totalBookings, setTotalBookings] = useState(0)
   const [avgDuration, setAvgDuration] = useState(0)
   const [revenue, setRevenue] = useState(0)
@@ -35,16 +35,16 @@ export default function AdminAnalytics() {
         // Calc Avg Duration for completed bookings
         let totalHrs = 0
         let completedCount = 0
-        
+
         // Count trailing 7 days activity
-        const recent7 = [0,0,0,0,0,0,0]
+        const recent7 = [0, 0, 0, 0, 0, 0, 0]
         const now = new Date()
 
         bks.forEach(b => {
-          const entry = b.entryTime?.toDate()
-          
+          const entry = b.entryTime
+
           if (b.status === "completed" && entry && b.exitTime) {
-            const exit = b.exitTime.toDate()
+            const exit = b.exitTime
             const hrs = (exit.getTime() - entry.getTime()) / (1000 * 60 * 60)
             totalHrs += hrs > 0 ? hrs : 1
             completedCount++
@@ -59,17 +59,17 @@ export default function AdminAnalytics() {
         })
 
         setAvgDuration(completedCount > 0 ? (totalHrs / completedCount) : 0)
-        
+
         // Normalize Chart Bars
         const maxActivity = Math.max(...recent7) || 1
         setChartBars(recent7.map(count => (count / maxActivity) * 100))
-        
+
         setLoading(false)
       } catch (err) {
         console.error(err)
       }
     }
-    
+
     loadData()
   }, [user])
 
@@ -138,7 +138,7 @@ export default function AdminAnalytics() {
             {chartBars.map((height, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
                 <div className="w-full relative bg-muted rounded-t-md overflow-hidden flex items-end h-48 border-b border-border">
-                  <div 
+                  <div
                     className="w-full bg-primary/40 group-hover:bg-primary transition-all duration-500 rounded-t-sm"
                     style={{ height: `${height}%` }}
                   />

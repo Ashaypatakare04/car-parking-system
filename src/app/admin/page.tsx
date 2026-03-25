@@ -9,7 +9,7 @@ import { Car, DollarSign, Activity, Settings2 } from "lucide-react"
 
 export default function AdminDashboard() {
   const { user } = useAppStore()
-  
+
   const [slots, setSlots] = useState<ParkingSlot[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [activeBookings, setActiveBookings] = useState<Booking[]>([])
@@ -37,14 +37,14 @@ export default function AdminDashboard() {
   const occupied = slots.filter(s => s.status === "occupied").length
   const totalSlots = slots.length
   const utilization = totalSlots > 0 ? Math.round((occupied / totalSlots) * 100) : 0
-  
+
   // Calculate today's revenue
   const today = new Date()
-  today.setHours(0,0,0,0)
+  today.setHours(0, 0, 0, 0)
   const todayRevenue = transactions
-    .filter(t => t.timestamp?.toDate() >= today)
+    .filter(t => t.timestamp && t.timestamp >= today)
     .reduce((acc, curr) => acc + curr.amount, 0)
-    
+
   const totalRevenue = transactions.reduce((acc, curr) => acc + curr.amount, 0)
 
   return (
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
                 <div key={trx.id} className="flex justify-between items-center border-b border-border/50 pb-2 last:border-0">
                   <div>
                     <p className="text-sm font-medium">{trx.id}</p>
-                    <p className="text-xs text-muted-foreground">{trx.timestamp?.toDate().toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground">{trx.timestamp.toLocaleString()}</p>
                   </div>
                   <div className="font-bold text-green-600 dark:text-green-500">${trx.amount.toFixed(2)}</div>
                 </div>
@@ -138,14 +138,14 @@ export default function AdminDashboard() {
             <CardDescription>Live health checks.</CardDescription>
           </CardHeader>
           <CardContent>
-             <div className="flex items-center gap-4 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400">
-               <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse" />
-               <p className="font-medium text-sm">Firestore Real-time Listeners: Active & Synced</p>
-             </div>
-             <div className="flex items-center gap-4 p-4 mt-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
-               <div className="h-3 w-3 rounded-full bg-blue-500 animate-pulse" />
-               <p className="font-medium text-sm">Automated Exit Engine: Online</p>
-             </div>
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400">
+              <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse" />
+              <p className="font-medium text-sm">Firestore Real-time Listeners: Active & Synced</p>
+            </div>
+            <div className="flex items-center gap-4 p-4 mt-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
+              <div className="h-3 w-3 rounded-full bg-blue-500 animate-pulse" />
+              <p className="font-medium text-sm">Automated Exit Engine: Online</p>
+            </div>
           </CardContent>
         </Card>
       </div>
