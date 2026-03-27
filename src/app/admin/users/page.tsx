@@ -87,12 +87,12 @@ export default function AdminUsers() {
               <span>Joined</span>
               <span className="text-right">Access</span>
             </div>
-            
+
             <div className="divide-y divide-border/50 max-h-[600px] overflow-y-auto">
               {users.map((targetUser) => {
                 const isAdmin = targetUser.role === "admin"
                 const isSelf = targetUser.id === currentUser?.id
-                
+
                 return (
                   <div key={targetUser.id} className="grid grid-cols-[1fr_2fr_1fr_120px] items-center p-4 hover:bg-muted/20 transition-colors">
                     <div className="flex items-center gap-3">
@@ -101,19 +101,19 @@ export default function AdminUsers() {
                       </div>
                       <div className="font-semibold">{targetUser.name}</div>
                     </div>
-                    
+
                     <div>
                       <div className="text-sm font-medium">{targetUser.email}</div>
                       <div className="text-xs text-muted-foreground font-mono mt-0.5">{targetUser.id}</div>
                     </div>
-                    
+
                     <div className="text-sm text-muted-foreground">
                       {targetUser.createdAt.toLocaleDateString()}
                     </div>
-                    
+
                     <div className="flex justify-end">
                       <Button
-                        variant={isAdmin ? "default" : "outline"}
+                        variant={isAdmin ? "primary" : "outline"}
                         size="sm"
                         disabled={isSelf}
                         onClick={() => toggleRole(targetUser)}
@@ -125,7 +125,7 @@ export default function AdminUsers() {
                   </div>
                 )
               })}
-              
+
               {users.length === 0 && (
                 <div className="p-12 text-center text-muted-foreground flex flex-col items-center">
                   <AlertCircle className="h-8 w-8 mb-4 opacity-30" />

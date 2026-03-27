@@ -23,11 +23,26 @@ export default function AdminDashboard() {
 
     const qTrx = query(collection(db, "transactions"), orderBy("timestamp", "desc"))
     const unsubTrx = onSnapshot(qTrx, (snap) => {
-      setTransactions(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Transaction)))
+      setTransactions(snap.docs.map(doc => {
+        const data = doc.data()
+        return {
+          id: doc.id,
+          ...data,
+          timestamp: data.timestamp?.toDate() || new Date()
+        } as Transaction
+      }))
     })
 
     const unsubBookings = onSnapshot(collection(db, "bookings"), (snap) => {
-      const all = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Booking))
+      const all = snap.docs.map(doc => {
+        const data = doc.data()
+        return {
+          id: doc.id,
+          ...data,
+          entryTime: data.entryTime?.toDate(),
+          exitTime: data.exitTime?.toDate() || null
+        } as Booking
+      })
       setActiveBookings(all.filter(b => b.status === "active"))
     })
 

@@ -83,11 +83,14 @@ export const createBooking = async (userId: string, vehicleNumber: string, slot:
 };
 
 export const processExit = async (booking: Booking) => {
+  const settingsDoc = await getDoc(doc(db, "settings", "global"));
+  const { baseFee = 10, hourlyRate = 5 } = settingsDoc.exists() ? settingsDoc.data() : {};
+
   const exitTime = new Date();
   const entryTime = booking.entryTime;
   const hours = Math.ceil((exitTime.getTime() - entryTime.getTime()) / (1000 * 60 * 60));
   const calculatedHours = hours > 0 ? hours : 1;
-  const fee = 10 + (calculatedHours * 5); // $10 base + $5/hr
+  const fee = baseFee + (calculatedHours * hourlyRate);
 
   const transactionId = `TRX-${Date.now()}`;
 

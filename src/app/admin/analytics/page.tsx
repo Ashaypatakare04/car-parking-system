@@ -29,7 +29,15 @@ export default function AdminAnalytics() {
         setRevenue(rev)
 
         const bkShot = await getDocs(query(collection(db, "bookings"), orderBy("entryTime", "asc")))
-        const bks = bkShot.docs.map(t => t.data() as Booking)
+        const bks = bkShot.docs.map(t => {
+          const data = t.data()
+          return {
+            ...data,
+            id: t.id,
+            entryTime: data.entryTime?.toDate(),
+            exitTime: data.exitTime?.toDate() || null
+          } as Booking
+        })
         setTotalBookings(bks.length)
 
         // Calc Avg Duration for completed bookings
